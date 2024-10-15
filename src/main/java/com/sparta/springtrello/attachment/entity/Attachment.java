@@ -37,14 +37,15 @@ public class Attachment {
     @Column(name = "delete_at")
     private LocalDateTime deleteAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "card_id", nullable = true)
-    private Card card;
+    // Card entity 추가하면 주석 제거
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "card_id", nullable = true)
+//    private Card card;
 
 
     @Builder
     private Attachment(String originalFilename, String saveFilename, String filePath, Long fileSize, AttachmentDeleteState isDelete, LocalDateTime createAt, LocalDateTime deleteAt
-    , Card card) {
+    , /*카드 엔티티 추가 후 주석 제거Card card*/ ) {
         this.originalFilename = originalFilename;
         this.saveFilename = saveFilename;
         this.filePath = filePath;
@@ -52,11 +53,11 @@ public class Attachment {
         this.isDelete = isDelete;
         this.createAt = createAt;
         this.deleteAt = deleteAt;
-        this.card = card;
+        /*카드 엔티티 추가 후 주석 제거 this.card = card; */
     }
 
 
-    public static Attachment uploadAttachment(String originalFilename, String saveFilename, String filePath, Long fileSize, Card card) {
+    public static Attachment uploadAttachment(String originalFilename, String saveFilename, String filePath, Long fileSize, /*Card card*/) {
         return Attachment.builder()
                 .originalFilename(originalFilename)
                 .saveFilename(saveFilename)
@@ -65,7 +66,7 @@ public class Attachment {
                 .isDelete(AttachmentDeleteState.UNDELETED)
                 .createAt(LocalDateTime.now())
                 .deleteAt(null)
-                .card(card)
+                /*카드 엔티티 추가 후 주석 제거 .card(card)*/
                 .build();
     }
 }
