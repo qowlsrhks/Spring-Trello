@@ -5,6 +5,8 @@ import com.sparta.springtrello.domain.board.entity.Board;
 import com.sparta.springtrello.domain.workspace.dto.WorkSpaceRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@NoArgsConstructor
 @Table(name = "workspace")
 public class WorkSpace {
     @Id

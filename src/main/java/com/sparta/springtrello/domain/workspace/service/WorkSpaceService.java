@@ -4,20 +4,20 @@ import com.sparta.springtrello.domain.workspace.dto.WorkSpaceRequestDto;
 import com.sparta.springtrello.domain.workspace.dto.WorkSpaceResponseDto;
 import com.sparta.springtrello.domain.workspace.entity.WorkSpace;
 import com.sparta.springtrello.domain.workspace.repository.WorkSpaceRepository;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class WorkSpaceService {
 
-    private WorkSpaceRepository workSpaceRepository;
-//    private UserRepository userRepository;
-
-//    생성
+    private final WorkSpaceRepository workSpaceRepository;
+    //    생성
     @Transactional
     public WorkSpaceResponseDto createWorkSpace(WorkSpaceRequestDto workSpaceRequestDto) {
         WorkSpace workSpace = new WorkSpace(workSpaceRequestDto);
@@ -26,8 +26,10 @@ public class WorkSpaceService {
 
     }
 //    수정
-    public WorkSpaceResponseDto updateWorkSpace(WorkSpaceRequestDto workSpaceRequestDto) {
-        WorkSpace workSpace = new WorkSpace(workSpaceRequestDto);
+    public WorkSpaceResponseDto updateWorkSpace(Long workSpaceId,WorkSpaceRequestDto workSpaceRequestDto) {
+        WorkSpace workSpace = workSpaceRepository.findById(workSpaceId).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 워크스페이스입니다.")
+        );
         workSpace.update(workSpaceRequestDto);
         workSpaceRepository.save(workSpace);
         return new WorkSpaceResponseDto(workSpace);
@@ -38,7 +40,6 @@ public class WorkSpaceService {
         WorkSpace workSpace = workSpaceRepository.findById(workSpaceId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 워크스페이스입니다.")
         );
-
         return new WorkSpaceResponseDto(workSpace);
 
     }

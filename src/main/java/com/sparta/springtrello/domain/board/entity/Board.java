@@ -5,11 +5,16 @@ import com.sparta.springtrello.domain.board.dto.BoardRequestDto;
 import com.sparta.springtrello.domain.workspace.entity.WorkSpace;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "board")
 public class Board {
 
@@ -36,7 +41,6 @@ public class Board {
     private WorkSpace workSpace;
 
     public Board(BoardRequestDto boardRequestDto) {
-
         this.boardTitle = boardRequestDto.getBoardTitle();
         this.boardDescription = boardRequestDto.getBoardDescription();
         this.createdAt = LocalDateTime.now();
