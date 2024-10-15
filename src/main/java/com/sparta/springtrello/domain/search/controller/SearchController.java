@@ -28,8 +28,8 @@ public class SearchController {
 
 
     @GetMapping("/boards/{boardId}/cards/search")
-    public ResponseEntity<BoardCardSearch> searchBoardCard(@PathVariable Long boardId) {
-        BoardCardSearch boardCardSearch = searchService.boardCardSearch(boardId);
+    public ResponseEntity<List<BoardCardSearch>> searchBoardCard(@PathVariable Long boardId) {
+        List<BoardCardSearch> boardCardSearch = searchService.boardCardSearch(boardId);
         return ResponseEntity.ok().body(boardCardSearch);
     }
 
