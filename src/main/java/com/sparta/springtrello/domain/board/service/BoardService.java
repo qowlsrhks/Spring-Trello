@@ -15,13 +15,10 @@ import java.util.List;
 public class BoardService {
 
     private BoardRepository boardRepository;
-//    private UserRepository userRepository;
 
 //    생성
     @Transactional
     public BoardResponseDto createBoard(BoardRequestDto boardRequestDto) {
-//        User user = userRepository.findById(userId).orElseThrow(()
-//                -> new IllegalArgumentException("존재하지 않는 유저입니다."));
         Board board = new Board(boardRequestDto);
         boardRepository.save(board);
         return new BoardResponseDto(board);

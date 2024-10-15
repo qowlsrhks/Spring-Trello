@@ -6,6 +6,7 @@ import com.sparta.springtrello.domain.workspace.entity.WorkSpace;
 import com.sparta.springtrello.domain.workspace.repository.WorkSpaceRepository;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
