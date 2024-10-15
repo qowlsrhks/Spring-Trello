@@ -15,7 +15,7 @@ import java.util.List;
 public class BoardService {
 
     private BoardRepository boardRepository;
-
+    private UserRepository userRepository;
 //    생성
     @Transactional
     public BoardResponseDto createBoard(BoardRequestDto boardRequestDto) {
