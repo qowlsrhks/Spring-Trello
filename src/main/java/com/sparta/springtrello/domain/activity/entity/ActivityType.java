@@ -1,4 +1,4 @@
-package com.sparta.springtrello.domain.comment.activity.entity;
+package com.sparta.springtrello.domain.activity.entity;
 
 public enum ActivityType {
     CARD_CREATED,

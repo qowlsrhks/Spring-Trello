@@ -1,4 +1,4 @@
-package com.sparta.springtrello.domain.comment.activity.entity;
+package com.sparta.springtrello.domain.activity.entity;
 
 import com.sparta.springtrello.user.entity.User;
 import jakarta.persistence.*;

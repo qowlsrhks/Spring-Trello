@@ -1,6 +1,6 @@
-package com.sparta.springtrello.domain.comment.activity.entity;
+package com.sparta.springtrello.domain.activity.entity;
 
-import com.sparta.springtrello.domain.comment.activity.service.ActivityService;
+import com.sparta.springtrello.domain.activity.service.ActivityService;
 import com.sparta.springtrello.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

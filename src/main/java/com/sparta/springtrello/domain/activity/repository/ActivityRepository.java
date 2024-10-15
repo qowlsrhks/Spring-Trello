@@ -1,6 +1,6 @@
-package com.sparta.springtrello.domain.comment.activity.repository;
+package com.sparta.springtrello.domain.activity.repository;
 
-import com.sparta.springtrello.domain.comment.activity.entity.Activity;
+import com.sparta.springtrello.domain.activity.entity.Activity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.smartcardio.Card;
