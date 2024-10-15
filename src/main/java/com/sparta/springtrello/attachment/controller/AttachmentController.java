@@ -15,7 +15,7 @@ public class AttachmentController {
     private final AttachmentService attachmentService;
 
     @PostMapping("/{cardId}/attachments")
-    public ResponseEntity<UploadAttachment> createAttchment(@PathVariable("cardId") String cardId, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<UploadAttachment> createAttchment(@PathVariable("cardId") Long cardId, @RequestParam("file") MultipartFile file) {
         UploadAttachment uploadAttachment = attachmentService.uploadAttachment(cardId, file);
         return ResponseEntity.ok().body(uploadAttachment);
     }
