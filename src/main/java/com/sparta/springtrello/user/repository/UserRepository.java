@@ -6,8 +6,8 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository {
+public interface UserRepository extends JpaRepository<User, Long> {
     // 이메일로 사용자를 찾는 메소드 (탈퇴 상태와 관계없이)
     Optional<User> findByEmail(@Param("email") String email);
-
+    Optional<User> findByEmailAndIsDeletedFalse(String email);
 }
