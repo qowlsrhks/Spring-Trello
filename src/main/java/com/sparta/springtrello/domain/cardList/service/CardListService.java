@@ -69,8 +69,15 @@ public class CardListService {
         return id;
     }
 
-    public void updateList() {
+    public CardListResponseDto updateList(Long id, CardListRequestDto cardListRequestDto) {
+        CardList cardList = listRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 ID 입니다.")
+        );
 
+        cardList.setListName(cardListRequestDto.getListName());
+        CardList savedCardList = listRepository.save(cardList);
+
+        return new CardListResponseDto(savedCardList);
     }
 
     public Long arrangeList(CardListArrangeRequestDto requestDto) {

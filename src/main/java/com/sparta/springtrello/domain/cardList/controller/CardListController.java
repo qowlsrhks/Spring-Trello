@@ -35,6 +35,13 @@ public class CardListController {
         return ResponseEntity.ok(responseDtos);
     }
 
+    @PutMapping("/list/{id}")
+    ResponseEntity<CardListResponseDto> updateList(@PathVariable Long id,
+                                                   @RequestBody CardListRequestDto requestDto) {
+        CardListResponseDto responseDto = listService.updateList(id, requestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
     @PatchMapping("/list")
     ResponseEntity<Long> arrangeList(@RequestBody CardListArrangeRequestDto requestDto) {
         Long arrangedId = listService.arrangeList(requestDto);
