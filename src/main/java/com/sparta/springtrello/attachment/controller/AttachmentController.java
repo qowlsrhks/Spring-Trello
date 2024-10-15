@@ -5,6 +5,8 @@ import com.sparta.springtrello.attachment.dto.response.GetAttachment;
 import com.sparta.springtrello.attachment.dto.response.UploadAttachment;
 import com.sparta.springtrello.attachment.entity.Attachment;
 import com.sparta.springtrello.attachment.service.AttachmentService;
+import com.sparta.springtrello.common.Auth;
+import com.sparta.springtrello.common.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -27,8 +29,8 @@ public class AttachmentController {
     private final AttachmentService attachmentService;
 
     @PostMapping
-    public ResponseEntity<UploadAttachment> uploadAttachment(@PathVariable Long cardId, @RequestPart("file") MultipartFile file) throws IOException {
-        UploadAttachment uploadAttachment = attachmentService.uploadAttachment(cardId, file);
+    public ResponseEntity<UploadAttachment> uploadAttachment(@Auth AuthUser authUser, @PathVariable Long cardId, @RequestPart("file") MultipartFile file) throws IOException {
+        UploadAttachment uploadAttachment = attachmentService.uploadAttachment(authUser,cardId, file);
         return ResponseEntity.ok().header(String.valueOf(HttpStatus.OK)).body(uploadAttachment);
     }
 
@@ -54,8 +56,8 @@ public class AttachmentController {
     }
 
     @DeleteMapping("/{attachmentId}")
-    public ResponseEntity<DeleteMessage> deleteAttachment(@PathVariable Long cardId, @PathVariable Long attachmentId) {
-        DeleteMessage deleteMessage = attachmentService.deleteAttachment(cardId, attachmentId);
+    public ResponseEntity<DeleteMessage> deleteAttachment(@Auth AuthUser authUser, @PathVariable Long cardId, @PathVariable Long attachmentId) {
+        DeleteMessage deleteMessage = attachmentService.deleteAttachment(authUser, cardId, attachmentId);
         return ResponseEntity.ok().header(String.valueOf(HttpStatus.OK)).body(deleteMessage);
     }
 

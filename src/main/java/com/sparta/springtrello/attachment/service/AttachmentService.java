@@ -8,6 +8,7 @@ import com.sparta.springtrello.attachment.exception.AttachmentDataAccessExceptio
 import com.sparta.springtrello.attachment.exception.AttachmentNotFoundException;
 import com.sparta.springtrello.attachment.exception.FileBadRequestException;
 import com.sparta.springtrello.attachment.repository.AttachmentRepository;
+import com.sparta.springtrello.common.AuthUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +34,7 @@ public class AttachmentService {
     private final AttachmentRepository attachmentRepository;
 
     @Transactional
-    public UploadAttachment uploadAttachment(Long cardId, MultipartFile file) throws IOException {
+    public UploadAttachment uploadAttachment(AuthUser authUser, Long cardId, MultipartFile file) throws IOException {
         if(file.isEmpty()){
             log.error("File is empty");
             throw new FileBadRequestException("업로드 할 파일이 없습니다.");
@@ -95,7 +96,7 @@ public class AttachmentService {
     }
 
     @Transactional
-    public DeleteMessage deleteAttachment(Long cardId, Long attachmentId) {
+    public DeleteMessage deleteAttachment(AuthUser authUser, Long cardId, Long attachmentId) {
 
         //유저 역할 읽기 전용 예외처리
 
