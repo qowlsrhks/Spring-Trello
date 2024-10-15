@@ -16,6 +16,8 @@ public class CardResponseDto {
         this.closingAt = card.getClosingAt();
         this.createdAt = card.getCreatedAt();
         this.modifiedAt = card.getModifiedAt();
+        this.prevCardId = card.getPrevCardId();
+        this.nextCardId = card.getNextCardId();
         this.listId = card.getCardList().getListId();
     }
 
@@ -25,5 +27,7 @@ public class CardResponseDto {
     private LocalDateTime closingAt;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+    private Long prevCardId;
+    private Long nextCardId;
     private Long listId;
 }
