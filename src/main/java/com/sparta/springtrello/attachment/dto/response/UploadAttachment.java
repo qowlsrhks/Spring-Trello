@@ -1,6 +1,7 @@
 package com.sparta.springtrello.attachment.dto.response;
 
 
+import com.sparta.springtrello.attachment.entity.Attachment;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,21 +13,23 @@ public class UploadAttachment {
     private Long attachmentId;
     private Long cardId;
     private String fileName;
-    private String fileType;
     private LocalDateTime createdAt;
 
 
     @Builder
-    private UploadAttachment(Long attachmentId, Long cardId, String fileName, String fileType, LocalDateTime createdAt) {
+    private UploadAttachment(Long attachmentId, Long cardId, String fileName,LocalDateTime createdAt) {
         this.attachmentId = attachmentId;
         this.cardId = cardId;
         this.fileName = fileName;
-        this.fileType = fileType;
         this.createdAt = createdAt;
     }
 
-    public static UploadAttachment uploadAttachment() {
-        return UploadAttachment.builder().build();
+    public static UploadAttachment uploadAttachment(Attachment attachment) {
+        return UploadAttachment.builder()
+                .attachmentId(attachment.getId())
+                .fileName(attachment.getSaveFilename())
+                .createdAt(attachment.getCreateAt())
+                .build();
     }
 
 }
