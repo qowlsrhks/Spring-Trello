@@ -18,4 +18,10 @@ public class CardController {
         CardResponseDto responseDto = cardService.createCard(id, requestDto);
         return ResponseEntity.ok(responseDto);
     }
+
+    @DeleteMapping("/list/{listId}/card/{cardId}")
+    public ResponseEntity<Long> deleteCard(@PathVariable("listId") Long listId, @PathVariable("cardId") Long cardId){
+        Long id = cardService.deleteCard(listId, cardId);
+        return ResponseEntity.ok(id);
+    }
 }

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -49,5 +50,38 @@ public class CardService {
         }
 
         return new CardResponseDto(savedCard);
+    }
+
+    public Long deleteCard(Long listId, Long cardId) {
+        Card card = cardRepository.findById(cardId).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 카드 ID 입니다.")
+        );
+
+        CardList list = listRepository.findById(listId).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 리스트 ID 입니다.")
+        );
+
+        List<Card> cards = cardRepository.findAllByCardList(list);
+
+        // 이전, 다음거도 바꿔야 함.
+        if(card.getNextCardId() != null) {
+            Card nextCard = cards.stream().filter(c -> c.getCardId().equals(card.getNextCardId())).findFirst().orElse(null);
+            if(nextCard != null) {
+                nextCard.setPrevCardId(card.getPrevCardId());
+                cardRepository.save(nextCard);
+            }
+        }
+
+        if(card.getPrevCardId() != null) {
+            Card prevCard = cards.stream().filter(c -> c.getCardId().equals(card.getPrevCardId())).findFirst().orElse(null);
+            if(prevCard != null) {
+                prevCard.setNextCardId(card.getNextCardId());
+                cardRepository.save(prevCard);
+            }
+        }
+
+        cardRepository.deleteById(cardId);
+
+        return cardId;
     }
 }
