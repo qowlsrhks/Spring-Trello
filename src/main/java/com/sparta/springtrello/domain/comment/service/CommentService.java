@@ -1,17 +1,16 @@
 package com.sparta.springtrello.domain.comment.service;
 
+import com.sparta.springtrello.domain.card.repository.CardRepository;
 import com.sparta.springtrello.domain.comment.dto.request.CommentRequestDto;
 import com.sparta.springtrello.domain.comment.dto.response.CommentResponseDto;
 import com.sparta.springtrello.domain.comment.entity.Comment;
 import com.sparta.springtrello.domain.comment.repository.CommentRepository;
 import com.sparta.springtrello.user.entity.User;
 import com.sparta.springtrello.user.repository.UserRepository;
-import lombok.NoArgsConstructor;
+import com.sparta.springtrello.domain.card.entity.Card;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.smartcardio.Card;
 import java.util.List;
 
 @Service
@@ -24,15 +23,16 @@ public class CommentService {
     @Transactional
     public CommentResponseDto createComment(Long cardId, String email, CommentRequestDto requestDto) {
         User user = userRepository.findByEmail(email).orElseThrow(()-> new IllegalArgumentException("권한이 없습니다."));
-        Card card = cardRepository.findByid(cardId).orElseThrow(()-> new IllegalArgumentException("카드를 찾을 수 없습니다."));
-        Comment comment = commentRepository.save(user, card, requestDto);
-        return new CommentResponseDto(comment);
+        Card card = cardRepository.findById(cardId).orElseThrow(()-> new IllegalArgumentException("카드를 찾을 수 없습니다."));
+        Comment comment = new Comment(user, card, requestDto);
+        Comment saveDomment = commentRepository.save(comment);
+        return new CommentResponseDto(saveDomment);
     }
 
 
     public List<CommentResponseDto> getComments(Long cardId, String email) {
         userRepository.findByEmail(email).orElseThrow(()-> new IllegalArgumentException("권한이 없습니다."));
-        Card card = findById(cardId.orElseThrows(()-> new IllegalArgumentException("카드를 찾을 수 없습니다."));
+        Card card = cardRepository.findById(cardId).orElseThrow(()-> new IllegalArgumentException("카드를 찾을 수 없습니다."));
         return commentRepository.findByCardOrderByModifiedAtDesc(card).stream().map(CommentResponseDto::new).toList();
     }
 

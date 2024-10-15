@@ -1,11 +1,11 @@
 package com.sparta.springtrello.domain.activity.entity;
 
 import com.sparta.springtrello.domain.activity.service.ActivityService;
+import com.sparta.springtrello.domain.card.entity.Card;
 import com.sparta.springtrello.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import javax.smartcardio.Card;
 import java.time.LocalDate;
 
 @Component
@@ -45,52 +45,37 @@ public class ActivityLogger {
     }
 
     public void logChecklistAdded(Card card, User user, String checklistName) {
-        String details = String.format("Checklist added: %s", checklistName);
+        String details = String.format(user.getUsername()+"님이 체크리스트를 추가했습니다 : %s", checklistName);
         activityService.logActivity(card, user, ActivityType.CHECKLIST_ADDED, details);
     }
 
     public void logChecklistItemAdded(Card card, User user, String itemContent) {
-        String details = String.format("Checklist item added: %s", itemContent);
+        String details = String.format(user.getUsername()+"님이 체크리스트 항목을 추가했습니다: %s", itemContent);
         activityService.logActivity(card, user, ActivityType.CHECKLIST_ITEM_ADDED, details);
     }
 
     public void logChecklistItemCompleted(Card card, User user, String itemContent) {
-        String details = String.format("Checklist item completed: %s", itemContent);
+        String details = String.format("체크리스트가 완료되었습니다.: %s", itemContent);
         activityService.logActivity(card, user, ActivityType.CHECKLIST_ITEM_COMPLETED, details);
     }
 
-    public void logChecklistItemUncompleted(Card card, User user, String itemContent) {
-        String details = String.format("Checklist item uncompleted: %s", itemContent);
-        activityService.logActivity(card, user, ActivityType.CHECKLIST_ITEM_UNCOMPLETED, details);
-    }
-
     public void logChecklistItemDeleted(Card card, User user, String itemContent) {
-        String details = String.format("Checklist item deleted: %s", itemContent);
+        String details = String.format(user.getUsername()+"님이 체크리스트 항목을 삭제했습니다.: %s", itemContent);
         activityService.logActivity(card, user, ActivityType.CHECKLIST_ITEM_DELETED, details);
     }
 
-    public void logMemberAdded(Card card, User adder, User addedMember) {
-        String details = String.format("Member added to card: %s", addedMember.getName());
-        activityService.logActivity(card, adder, ActivityType.MEMBER_ADDED, details);
-    }
-
-    public void logMemberRemoved(Card card, User remover, User removedMember) {
-        String details = String.format("Member removed from card: %s", removedMember.getName());
-        activityService.logActivity(card, remover, ActivityType.MEMBER_REMOVED, details);
-    }
-
     public void logDueDateChanged(Card card, User user, LocalDate newDueDate) {
-        String details = String.format("Due date changed to: %s", newDueDate.toString());
+        String details = String.format(user.getUsername()+"님이 날짜를 변경했습니다: %s", newDueDate.toString());
         activityService.logActivity(card, user, ActivityType.DUE_DATE_CHANGED, details);
     }
 
     public void logLabelAdded(Card card, User user, String labelName) {
-        String details = String.format("Label added: %s", labelName);
+        String details = String.format(user.getUsername()+"님이 라벨을 추가했습니다: %s", labelName);
         activityService.logActivity(card, user, ActivityType.LABEL_ADDED, details);
     }
 
     public void logLabelRemoved(Card card, User user, String labelName) {
-        String details = String.format("Label removed: %s", labelName);
+        String details = String.format(user.getUsername()+"님이 라벨을 삭제했습니다.: %s", labelName);
         activityService.logActivity(card, user, ActivityType.LABEL_REMOVED, details);
     }
 }

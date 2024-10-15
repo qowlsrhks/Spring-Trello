@@ -1,28 +1,30 @@
 package com.sparta.springtrello.domain.activity.entity;
 
+import com.sparta.springtrello.domain.card.entity.Card;
+import com.sparta.springtrello.domain.common.Timestamped;
 import com.sparta.springtrello.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.smartcardio.Card;
 
 @Entity
 @Table(name = "activities")
 @Getter
-@Setter
 @NoArgsConstructor
-public class Activity {
+public class Activity extends Timestamped {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String contents;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "card_id")
+    @JoinColumn(name = "card_id")
     private Card card;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Enumerated(EnumType.STRING)
@@ -30,5 +32,10 @@ public class Activity {
     private ActivityType type;
 
 
-
+    public Activity(Card card, User user, ActivityType type, String details, Object o) {
+        this.card = card;
+        this.user = user;
+        this.type = type;
+        this.contents = details;
+    }
 }
