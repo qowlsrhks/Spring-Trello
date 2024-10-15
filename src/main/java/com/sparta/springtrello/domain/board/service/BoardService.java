@@ -6,6 +6,7 @@ import com.sparta.springtrello.domain.board.entity.Board;
 import com.sparta.springtrello.domain.board.repository.BoardRepository;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class BoardService {
 //    private UserRepository userRepository;
 
 //    생성
+    @Transactional
     public BoardResponseDto createBoard(BoardRequestDto boardRequestDto) {
 //        User user = userRepository.findById(userId).orElseThrow(()
 //                -> new IllegalArgumentException("존재하지 않는 유저입니다."));
@@ -43,6 +45,7 @@ public class BoardService {
         return new BoardResponseDto(board);
     }
 //    삭제
+    @Transactional
     public void deleteBoard(Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 보드입니다.")

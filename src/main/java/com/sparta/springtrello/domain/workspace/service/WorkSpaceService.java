@@ -17,6 +17,7 @@ public class WorkSpaceService {
 //    private UserRepository userRepository;
 
 //    생성
+    @Transactional
     public WorkSpaceResponseDto createWorkSpace(WorkSpaceRequestDto workSpaceRequestDto) {
         WorkSpace workSpace = new WorkSpace(workSpaceRequestDto);
         workSpaceRepository.save(workSpace);
@@ -47,6 +48,7 @@ public class WorkSpaceService {
     }
 
 //    삭제
+    @Transactional
     public void deleteWorkSpace(Long workSpaceId) {
         WorkSpace workSpace = workSpaceRepository.findById(workSpaceId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 워크스페이스입니다.")
