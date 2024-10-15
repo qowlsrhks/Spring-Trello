@@ -4,6 +4,8 @@ import com.sparta.springtrello.domain.comment.dto.request.CommentRequestDto;
 import com.sparta.springtrello.domain.comment.dto.response.CommentResponseDto;
 import com.sparta.springtrello.domain.comment.entity.Comment;
 import com.sparta.springtrello.domain.comment.repository.CommentRepository;
+import com.sparta.springtrello.user.entity.User;
+import com.sparta.springtrello.user.repository.UserRepository;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
