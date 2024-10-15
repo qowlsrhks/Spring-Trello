@@ -44,8 +44,9 @@ public class Attachment {
 
 
     @Builder
-    private Attachment(String originalFilename, String saveFilename, String filePath, Long fileSize, AttachmentDeleteState isDelete, LocalDateTime createAt, LocalDateTime deleteAt
-    , /*카드 엔티티 추가 후 주석 제거Card card*/ ) {
+    private Attachment(String originalFilename, String saveFilename, String filePath, Long fileSize,
+                       AttachmentDeleteState isDelete, LocalDateTime createAt, LocalDateTime deleteAt
+     /*카드 엔티티 추가 후 주석 제거,Card card*/ ) {
         this.originalFilename = originalFilename;
         this.saveFilename = saveFilename;
         this.filePath = filePath;
@@ -57,7 +58,8 @@ public class Attachment {
     }
 
 
-    public static Attachment uploadAttachment(String originalFilename, String saveFilename, String filePath, Long fileSize, /*Card card*/) {
+    public static Attachment uploadAttachment(String originalFilename, String saveFilename, String filePath, Long fileSize
+            /*카드 엔티티 추가 후 주석 제거,Card card*/) {
         return Attachment.builder()
                 .originalFilename(originalFilename)
                 .saveFilename(saveFilename)

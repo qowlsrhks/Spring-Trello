@@ -18,8 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -67,7 +65,7 @@ public class AttachmentService {
         Long fileSize = file.getSize();
         log.info("fileSize : {}", fileSize);
 
-        Attachment attachment = Attachment.uploadAttachment(fileName, saveName, filePath,fileSize,null);
+        Attachment attachment = Attachment.uploadAttachment(fileName, saveName, filePath,fileSize/*카드 엔티티 추가 후 주석 제거,null*/);
 
         file.transferTo(new File(filePath));
 
