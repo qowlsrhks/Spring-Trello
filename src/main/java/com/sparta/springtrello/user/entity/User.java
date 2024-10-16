@@ -1,5 +1,6 @@
 package com.sparta.springtrello.user.entity;
 
+import com.sparta.springtrello.workspaceMember.entity.Wsmember;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 이메일로 사용자 ID 설정
+    private Long user_id; // 이메일로 사용자 ID 설정
 
     @Column(nullable = false)
     private String password;
@@ -33,6 +34,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role; // USER 또는 OWNER
 
+    @OneToMany(mappedBy = "user")
+    private List<Wsmember> wsmember = new ArrayList<>();
 
 
     @Column
@@ -48,8 +51,8 @@ public class User {
     }
 
     // 테스트를 하기 위함
-    private User(Long id, String email, Role role) {
-        this.id = id;
+    private User(Long user_id, String email, Role role) {
+        this.user_id = user_id;
         this.email = email;
         this.role = role;
     }

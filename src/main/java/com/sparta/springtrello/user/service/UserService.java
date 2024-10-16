@@ -63,7 +63,7 @@ public class UserService {
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
-        String token = jwtUtil.createToken(user.getId(), user.getEmail(), user.getRole());
+        String token = jwtUtil.createToken(user.getUser_id(), user.getEmail(), user.getRole());
         jwtUtil.addJwtToCookie(token, response);
         return token;
     }
