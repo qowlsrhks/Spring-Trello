@@ -3,6 +3,7 @@ package com.sparta.springtrello.domain.board.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sparta.springtrello.domain.board.dto.BoardRequestDto;
 import com.sparta.springtrello.domain.cardList.entity.CardList;
+import com.sparta.springtrello.domain.common.Timestamped;
 import com.sparta.springtrello.domain.workspace.entity.WorkSpace;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -18,7 +19,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Table(name = "board")
-public class Board {
+public class Board extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,12 +30,6 @@ public class Board {
 
     @Column(name = "board_description", nullable = false)
     private String boardDescription;
-
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "modified_at")
-    private LocalDateTime modifiedAt;
 
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -49,14 +44,11 @@ public class Board {
     public Board(BoardRequestDto boardRequestDto) {
         this.boardTitle = boardRequestDto.getBoardTitle();
         this.boardDescription = boardRequestDto.getBoardDescription();
-        this.createdAt = LocalDateTime.now();
-        this.modifiedAt = LocalDateTime.now();
     }
 
     public void update(BoardRequestDto boardRequestDto) {
         this.boardTitle = boardRequestDto.getBoardTitle();
         this.boardDescription = boardRequestDto.getBoardDescription();
-        this.modifiedAt = LocalDateTime.now();
     }
 
 }
