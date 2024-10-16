@@ -1,10 +1,10 @@
 package com.sparta.springtrello.domain.user.entity;
 
-import com.sparta.springtrello.domain.board.entity.Board;
 import com.sparta.springtrello.domain.workspace.entity.WorkSpace;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.*;
 
 import java.time.LocalDateTime;
 
