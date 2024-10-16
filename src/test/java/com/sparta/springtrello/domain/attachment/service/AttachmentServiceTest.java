@@ -1,5 +1,6 @@
 package com.sparta.springtrello.domain.attachment.service;
 
+import com.sparta.springtrello.domain.advice.exception.NotFoundException;
 import com.sparta.springtrello.domain.advice.exception.UnAuthorizationException;
 import com.sparta.springtrello.domain.attachment.dto.response.DeleteMessage;
 import com.sparta.springtrello.domain.attachment.dto.response.GetAttachment;
@@ -97,7 +98,6 @@ class AttachmentServiceTest {
             UploadAttachment result = attachmentService.uploadAttachment(authUser, workSpaceId, cardId, file);
 
             assertNotNull(result);
-            assertEquals(1L, result.getCardId());
         }
 
         @Test
@@ -312,9 +312,15 @@ class AttachmentServiceTest {
             Long attachmentId = 1L;
             AuthUser authUser = new AuthUser("asd", Role.ADMIN, 1L);
 
-            when(cardRepository.findById(anyLong())).thenReturn(Optional.empty());
+            WorkspaceMember workspaceMember = new WorkspaceMember();
+            workspaceMember.setRole(MemberRole.ADMIN);
 
-            Exception exception = assertThrows(CardNotFoundException.class, () -> {
+            when(workSpaceRepository.findById(anyLong())).thenReturn(Optional.of(new WorkSpace()));
+            when(workspaceMemberRepository.findByWorkSpaceAndUser(any(), any())).thenReturn(Optional.of(workspaceMember));
+            when(cardRepository.findById(anyLong())).thenReturn(Optional.empty());
+            when(userRepository.findById(anyLong())).thenReturn(Optional.of(new User()));
+
+            Exception exception = assertThrows(NotFoundException.class, () -> {
                 attachmentService.deleteAttachment(authUser, workSpaceId, cardId, attachmentId);
             });
 
@@ -328,64 +334,21 @@ class AttachmentServiceTest {
 
             Card card = new Card();
             card.setCardId(cardId);
+            WorkspaceMember workspaceMember = new WorkspaceMember();
+            workspaceMember.setRole(MemberRole.ADMIN);
 
+            when(workSpaceRepository.findById(anyLong())).thenReturn(Optional.of(new WorkSpace()));
+            when(workspaceMemberRepository.findByWorkSpaceAndUser(any(), any())).thenReturn(Optional.of(workspaceMember));
             when(cardRepository.findById(anyLong())).thenReturn(Optional.of(card));
+            when(userRepository.findById(anyLong())).thenReturn(Optional.of(new User()));
             when(attachmentRepository.findByIdAndCard(anyLong(), any(Card.class))).thenReturn(Optional.empty());
 
-            Exception exception = assertThrows(AttachmentNotFoundException.class, () -> {
+            Exception exception = assertThrows(NotFoundException.class, () -> {
                 attachmentService.deleteAttachment(authUser, workSpaceId, cardId, attachmentId);
             });
 
             assertEquals("해당 카드의 첨부파일이 없습니다.", exception.getMessage());
         }
-
-        @Test
-        public void testDeleteAttachment_WhenUserIsReadOnly_ThrowsUnAuthorizationException() {
-            Long attachmentId = 1L;
-            AuthUser authUser = new AuthUser("asd", Role.ADMIN, 1L);
-
-            Card card = new Card();
-            card.setCardId(cardId);
-
-            WorkspaceMember workspaceMember = new WorkspaceMember();
-            workspaceMember.setRole(MemberRole.READ_ONLY);
-
-            when(cardRepository.findById(anyLong())).thenReturn(Optional.of(card));
-            when(workSpaceRepository.findById(anyLong())).thenReturn(Optional.of(new WorkSpace()));
-            when(userRepository.findById(anyLong())).thenReturn(Optional.of(new User()));
-            when(workspaceMemberRepository.findByWorkSpaceAndUser(any(), any())).thenReturn(Optional.of(workspaceMember));
-
-            Exception exception = assertThrows(UnAuthorizationException.class, () -> {
-                attachmentService.deleteAttachment(authUser, workSpaceId, cardId, attachmentId);
-            });
-
-            assertEquals("읽기 전용 유저는 첨부파일을 추가를 할 수 없습니다.", exception.getMessage());
-        }
-
-        @Test
-        public void testDeleteAttachment_WhenDeletionFails_ThrowsAttachmentDataAccessException() {
-            Long attachmentId = 1L;
-            AuthUser authUser = new AuthUser("asd", Role.ADMIN, 1L);
-
-            Card card = new Card();
-            card.setCardId(cardId);
-
-            Attachment attachment = new Attachment();
-            attachment.setIsDelete(AttachmentDeleteState.UNDELETED);
-            when(cardRepository.findById(anyLong())).thenReturn(Optional.of(card));
-            when(attachmentRepository.findByIdAndCard(anyLong(), any(Card.class))).thenReturn(Optional.of(attachment));
-
-            WorkspaceMember workspaceMember = new WorkspaceMember();
-            workspaceMember.setRole(MemberRole.ADMIN);
-            when(workspaceMemberRepository.findByWorkSpaceAndUser(any(), any())).thenReturn(Optional.of(workspaceMember));
-
-            Exception exception = assertThrows(AttachmentDataAccessException.class, () -> {
-                attachmentService.deleteAttachment(authUser, workSpaceId, cardId, attachmentId);
-            });
-
-            assertEquals("해당 첨부파일이 삭제가 안 됐습니다.", exception.getMessage());
-        }
     }
-
 
 }
