@@ -3,10 +3,12 @@ package com.sparta.springtrello.domain.workspace.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sparta.springtrello.domain.board.entity.Board;
 import com.sparta.springtrello.domain.workspace.dto.WorkSpaceRequestDto;
+import com.sparta.springtrello.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "workspace")
 public class WorkSpace {
@@ -32,6 +35,11 @@ public class WorkSpace {
 
     @Column(name = "modified_at")
     private LocalDateTime modifiedAt;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id", nullable = false)
+    @JsonBackReference
+    private User user;
 
     @OneToMany(mappedBy = "workSpace", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference

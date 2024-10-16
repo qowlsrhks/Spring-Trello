@@ -1,7 +1,6 @@
 package com.sparta.springtrello.domain.board.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sparta.springtrello.domain.board.dto.BoardRequestDto;
 import com.sparta.springtrello.domain.cardList.entity.CardList;
 import com.sparta.springtrello.domain.workspace.entity.WorkSpace;
@@ -38,7 +37,7 @@ public class Board {
     private LocalDateTime modifiedAt;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "workspace_id", nullable = false)
     @JsonBackReference
     private WorkSpace workSpace;
@@ -54,10 +53,11 @@ public class Board {
         this.modifiedAt = LocalDateTime.now();
     }
 
-    public void update(String boardTitle, String boardDescription, LocalDateTime modifiedAt) {
-        this.boardTitle = boardTitle;
-        this.boardDescription = boardDescription;
-        this.modifiedAt = modifiedAt;
+    public void update(BoardRequestDto boardRequestDto) {
+        this.boardTitle = boardRequestDto.getBoardTitle();
+        this.boardDescription = boardRequestDto.getBoardDescription();
+        this.modifiedAt = LocalDateTime.now();
     }
 
 }
+
