@@ -4,9 +4,12 @@ import com.sparta.springtrello.domain.board.dto.BoardRequestDto;
 import com.sparta.springtrello.domain.board.dto.BoardResponseDto;
 import com.sparta.springtrello.domain.board.entity.Board;
 import com.sparta.springtrello.domain.board.service.BoardService;
+import jakarta.validation.Valid;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,29 +23,29 @@ public class BoardController {
     private final BoardService boardService;
 
     //    생성
-    @PostMapping("/{wsId}")
-    public ResponseEntity<BoardResponseDto> createBoard(@PathVariable("wsId") Long workSpaceId, @RequestBody BoardRequestDto boardRequestDto) {
-        return ResponseEntity.ok(boardService.createBoard(workSpaceId,boardRequestDto));
+    @PostMapping("/{userId}/{wsId}")
+    public ResponseEntity<BoardResponseDto> createBoard(@PathVariable("userId") Long userId, @PathVariable("wsId") Long workSpaceId, @Valid @RequestBody BoardRequestDto boardRequestDto) {
+        return ResponseEntity.ok(boardService.createBoard(userId,workSpaceId,boardRequestDto));
     }
 //    단건조회
-    @GetMapping("/{wsId}/{boardId}")
-    public ResponseEntity<BoardResponseDto> getBoard(@PathVariable("wsId") Long workSpaceId, @PathVariable("boardId") Long boardId) {
-        return ResponseEntity.ok(boardService.getBoard(workSpaceId,boardId));
+    @GetMapping("/{userId}/{wsId}/{boardId}")
+    public ResponseEntity<BoardResponseDto> getBoard(@PathVariable("userId") Long userId,@PathVariable("wsId") Long workSpaceId, @PathVariable("boardId") Long boardId) {
+        return ResponseEntity.ok(boardService.getBoard(userId,workSpaceId,boardId));
     }
 //    다건조회
-    @GetMapping("/{wsId}/boardList")
-    public ResponseEntity<List<BoardResponseDto>> getBoards(@PathVariable("wsId") Long workSpaceId) {
-        return ResponseEntity.ok(boardService.getBoards(workSpaceId));
+    @GetMapping("/{userId}/{wsId}/boardList")
+    public ResponseEntity<List<BoardResponseDto>> getBoards(@PathVariable("userId") Long userId,@PathVariable("wsId") Long workSpaceId) {
+        return ResponseEntity.ok(boardService.getBoards(userId,workSpaceId));
     }
 //    수정
-    @PutMapping("/{wsId}/{boardId}")
-    public ResponseEntity<BoardResponseDto> updateBoard(@PathVariable("wsId") Long workSpaceId, @PathVariable("boardId") Long boardId, @RequestBody BoardRequestDto boardRequestDto) {
-        return ResponseEntity.ok(boardService.updateBoard(workSpaceId,boardId,boardRequestDto));
+    @PutMapping("/{userId}/{wsId}/{boardId}")
+    public ResponseEntity<BoardResponseDto> updateBoard(@PathVariable("userId") Long userId,@PathVariable("wsId") Long workSpaceId, @PathVariable("boardId") Long boardId,@Valid @RequestBody BoardRequestDto boardRequestDto) {
+        return ResponseEntity.ok(boardService.updateBoard(userId,workSpaceId,boardId,boardRequestDto));
     }
 //    삭제
-    @DeleteMapping("/{wsId}/{boardId}")
-    public ResponseEntity<String> deleteBoard(@PathVariable("wsId") Long workSpaceId,@PathVariable("boardId") Long boardId) {
-        boardService.deleteBoard(workSpaceId,boardId);
+    @DeleteMapping("/{userId}/{wsId}/{boardId}")
+    public ResponseEntity<String> deleteBoard(@PathVariable("userId") Long userId,@PathVariable("wsId") Long workSpaceId,@PathVariable("boardId") Long boardId) {
+        boardService.deleteBoard(userId,workSpaceId,boardId);
         return ResponseEntity.ok("삭제되었습니다.");
     }
 

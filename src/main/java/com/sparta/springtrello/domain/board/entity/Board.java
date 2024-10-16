@@ -47,10 +47,10 @@ public class Board {
         this.modifiedAt = LocalDateTime.now();
     }
 
-    public void update(String boardTitle, String boardDescription, LocalDateTime modifiedAt) {
-        this.boardTitle = boardTitle;
-        this.boardDescription = boardDescription;
-        this.modifiedAt = modifiedAt;
+    public void update(BoardRequestDto boardRequestDto) {
+        this.boardTitle = boardRequestDto.getBoardTitle();
+        this.boardDescription = boardRequestDto.getBoardDescription();
+        this.modifiedAt = LocalDateTime.now();
     }
 
 }
