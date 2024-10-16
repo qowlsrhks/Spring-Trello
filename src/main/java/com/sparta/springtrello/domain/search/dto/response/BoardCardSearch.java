@@ -24,4 +24,8 @@ public class BoardCardSearch {
                 .card_description(card_description)
                 .build();
     }
+
+    public static BoardCardSearch testBoardCard(String card_title, Long cardList_id, String card_description) {
+        return BoardCardSearch.builder().card_title(card_title).cardList_id(cardList_id).card_description(card_description).build();
+    }
 }
