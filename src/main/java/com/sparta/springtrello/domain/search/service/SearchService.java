@@ -43,7 +43,7 @@ public class SearchService {
         ).toList();
     }
 
-    public List<BoardCardSearch> boardCardSearch(Long boardId) {
+    public List<List<BoardCardSearch>> boardCardSearch(Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow(
                 () -> new BoardNotFoundException("보드를 찾을 수 없습니다.")
         );
@@ -54,16 +54,17 @@ public class SearchService {
             throw new CardListNotFoundException("리스트를 찾을 수 없습니다.");
         }
 
-        List<BoardCardSearch> boardCardSearch = new ArrayList<>();
+        List<List<BoardCardSearch>> boardCardSearch = new ArrayList<>();
         for(CardList cardList1 : cardList) {
             List<Card> cards = cardList1.getCards();
             if(cards.isEmpty()) {
                 throw new CardNotFoundException("카드를 찾을 수 없습니다.");
             }
 
-            boardCardSearch = cards.stream().map(card ->
-                    BoardCardSearch.of(card.getCardName(), card.getCardDescription())).toList();
+            List<BoardCardSearch> boardCardSearch1 = cards.stream().map(card ->
+                    BoardCardSearch.of(card.getCardName(),cardList1.getListId(), card.getCardDescription())).toList();
 
+            boardCardSearch.add(boardCardSearch1);
         }
 
         return boardCardSearch;
