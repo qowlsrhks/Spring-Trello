@@ -1,15 +1,15 @@
 package com.sparta.springtrello.domain.card.service;
 
-import com.sparta.springtrello.domain.activity.entity.ActivityLogger;
+import com.sparta.springtrello.domain.activity.common.ActivityLogger;
 import com.sparta.springtrello.domain.card.dto.CardArrangeRequestDto;
 import com.sparta.springtrello.domain.card.dto.CardRequestDto;
 import com.sparta.springtrello.domain.card.dto.CardResponseDto;
 import com.sparta.springtrello.domain.card.entity.Card;
 import com.sparta.springtrello.domain.card.repository.CardRepository;
-import com.sparta.springtrello.domain.cardList.dto.CardListResponseDto;
 import com.sparta.springtrello.domain.cardList.entity.CardList;
 import com.sparta.springtrello.domain.cardList.repository.CardListRepository;
 import com.sparta.springtrello.user.entity.User;
+import com.sparta.springtrello.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,12 +24,14 @@ public class CardService {
     private final CardRepository cardRepository;
     private final CardListRepository listRepository;
     private final ActivityLogger activityLogger;
+    private final UserRepository userRepository;
 
-    public CardResponseDto createCard(Long id, CardRequestDto requestDto) {
+    public CardResponseDto createCard(Long id, CardRequestDto requestDto, String email) {
         CardList cardList = listRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 리스트입니다.")
         );
         Card card = new Card();
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new IllegalArgumentException("권한이 없습니다."));
         card.setCardName(requestDto.getCardName());
         card.setCardDescription(requestDto.getCardDescription());
         card.setClosingAt(requestDto.getClosingAt());
@@ -50,6 +52,8 @@ public class CardService {
                 cardRepository.save(savedCard);
             }
         }
+
+        activityLogger.logCardCreated(card, user);
 
         return new CardResponseDto(savedCard);
     }
@@ -111,7 +115,7 @@ public class CardService {
         return responseDtoList;
     }
 
-    public Long arrangeCard(CardArrangeRequestDto requestDto) {
+    public Long arrangeCard(CardArrangeRequestDto requestDto, String email) {
         Long prevCardId = requestDto.getPrevCardId();
         Long cardId = requestDto.getCardId();
 
@@ -119,6 +123,9 @@ public class CardService {
                 () -> new IllegalArgumentException("존재하지 않는 카드 ID 입니다.")
         );
 
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new IllegalArgumentException("권한이 없습니다."));
+
+        CardList fromCardList = card.getCardList(); // 현재 카드의 리스트 (이동 전)
         CardList toCardList = listRepository.findById(requestDto.getToListId()).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 리스트 ID 입니다.")
         );
@@ -185,6 +192,7 @@ public class CardService {
         }
 
         card.setCardList(toCardList);
+        activityLogger.logCardMoved(card, user, fromCardList.getListName(), toCardList.getListName());
 
         return cardRepository.save(card).getCardId();
     }

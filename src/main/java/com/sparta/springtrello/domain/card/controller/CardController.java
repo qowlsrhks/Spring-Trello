@@ -4,6 +4,7 @@ import com.sparta.springtrello.domain.card.dto.CardArrangeRequestDto;
 import com.sparta.springtrello.domain.card.dto.CardRequestDto;
 import com.sparta.springtrello.domain.card.dto.CardResponseDto;
 import com.sparta.springtrello.domain.card.service.CardService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +18,9 @@ public class CardController {
     private final CardService cardService;
 
     @PostMapping("/list/{id}/card")
-    public ResponseEntity<CardResponseDto> createCard(@PathVariable("id") Long id, @RequestBody CardRequestDto requestDto){
-        CardResponseDto responseDto = cardService.createCard(id, requestDto);
+    public ResponseEntity<CardResponseDto> createCard(@PathVariable("id") Long id, @RequestBody CardRequestDto requestDto, HttpServletRequest httpServletRequest){
+        String email = (String) httpServletRequest.getAttribute("email");
+        CardResponseDto responseDto = cardService.createCard(id, requestDto, email);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -35,8 +37,9 @@ public class CardController {
     }
 
     @PatchMapping("/list/card")
-    public ResponseEntity<Long> arrangeCard(@RequestBody CardArrangeRequestDto requestDto){
-        Long id = cardService.arrangeCard(requestDto);
+    public ResponseEntity<Long> arrangeCard(@RequestBody CardArrangeRequestDto requestDto, HttpServletRequest httpServletRequest){
+        String email = (String) httpServletRequest.getAttribute("email");
+        Long id = cardService.arrangeCard(requestDto, email);
         return ResponseEntity.ok(id);
     }
 }

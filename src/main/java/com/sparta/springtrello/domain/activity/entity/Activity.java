@@ -1,6 +1,8 @@
 package com.sparta.springtrello.domain.activity.entity;
 
 import com.sparta.springtrello.domain.card.entity.Card;
+import com.sparta.springtrello.domain.cardList.entity.CardList;
+import com.sparta.springtrello.domain.comment.entity.Comment;
 import com.sparta.springtrello.domain.common.Timestamped;
 import com.sparta.springtrello.user.entity.User;
 import jakarta.persistence.*;
@@ -27,6 +29,10 @@ public class Activity extends Timestamped {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ActivityType type;
@@ -38,4 +44,5 @@ public class Activity extends Timestamped {
         this.type = type;
         this.contents = details;
     }
+
 }
