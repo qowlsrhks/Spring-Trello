@@ -7,6 +7,7 @@ import com.sparta.springtrello.domain.card.dto.CardUpdateRequestDto;
 import com.sparta.springtrello.domain.card.service.CardService;
 import com.sparta.springtrello.domain.common.Auth;
 import com.sparta.springtrello.domain.common.AuthUser;
+import com.sparta.springtrello.domain.user.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -58,5 +59,24 @@ public class CardController {
     public ResponseEntity<CardResponseDto> updateCard(@PathVariable Long id, @RequestBody CardUpdateRequestDto requestDto, @Auth AuthUser authUser){
         CardResponseDto responseDto = cardService.updateCard(id, requestDto, authUser);
         return ResponseEntity.ok(responseDto);
+    }
+
+    @PatchMapping("/list/archive/{cardId}")
+    public ResponseEntity<CardResponseDto> archiveCard(@PathVariable Long cardId, HttpServletRequest request) {
+        String email = (String) request.getAttribute("email");
+        CardResponseDto responseDto = cardService.archiveCard(cardId, email);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PatchMapping("/list/restore/{cardId}")
+    public ResponseEntity<CardResponseDto> RestoreCard(@PathVariable Long cardId, HttpServletRequest request) {
+        String email = (String) request.getAttribute("email");
+        CardResponseDto responseDto = cardService.unarchiveCard(cardId, email);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping("/list/archive/{listId}")
+    public ResponseEntity<List<CardResponseDto>> getArchiveCardList(@PathVariable Long listId) {
+       return ResponseEntity.ok(cardService.getActiveCardsByList(listId));
     }
 }
