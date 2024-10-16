@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.Getter;
 
 @Data
-@Getter
 public class GetAttachment {
     private Long attachmentId;
     private String fileName;
