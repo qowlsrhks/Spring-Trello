@@ -7,10 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CardListRepository extends JpaRepository<CardList, Long> {
 
     @Query("select c from CardList c join fetch c.cards where c.board = :board")
     List<CardList> findByBoard(@Param("board") Board board);
+
+    List<CardList> findAllByBoard(Board board);
 }

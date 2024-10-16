@@ -27,7 +27,7 @@ public class CommentController {
         return ResponseEntity.ok(commentService.getComments(cardId, email));
     }
 
-    @PutMapping("commensts/{commentId}")
+    @PutMapping("comments/{commentId}")
     ResponseEntity<CommentResponseDto> updateComment(@PathVariable Long commentId, @RequestBody CommentRequestDto commentRequestDto, HttpServletRequest httpServletRequest) {
         String email = (String) httpServletRequest.getAttribute("email");
         return ResponseEntity.ok(commentService.updateComment(commentId, commentRequestDto, email));

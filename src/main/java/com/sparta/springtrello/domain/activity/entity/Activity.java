@@ -1,6 +1,10 @@
 package com.sparta.springtrello.domain.activity.entity;
 
 import com.sparta.springtrello.domain.card.entity.Card;
+import com.sparta.springtrello.domain.cardList.entity.CardList;
+import com.sparta.springtrello.domain.checklist.entity.Checklist;
+import com.sparta.springtrello.domain.checklist.entity.ChecklistItem;
+import com.sparta.springtrello.domain.comment.entity.Comment;
 import com.sparta.springtrello.domain.common.Timestamped;
 import com.sparta.springtrello.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -17,6 +21,14 @@ public class Activity extends Timestamped {
     private Long id;
 
     private String contents;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "checklist_id")
+    private Checklist checklist;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "checklist_item_id")
+    private ChecklistItem checklistItem;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_id")
@@ -36,5 +48,25 @@ public class Activity extends Timestamped {
         this.user = user;
         this.type = type;
         this.contents = details;
+    }
+
+    public Activity(Checklist checklist, User user, ActivityType activityType, String details) {
+        this.checklist = checklist;
+        this.user = user;
+        this.type = activityType;
+        this.contents = details;
+    }
+
+    public Activity(ChecklistItem checklistItem, User user, ActivityType activityType, String details) {
+        this.checklistItem = checklistItem;
+        this.user = user;
+        this.type = activityType;
+        this.contents = details;
+    }
+
+    public Activity(ChecklistItem checklistItem, User user, ActivityType activityType) {
+        this.checklistItem = checklistItem;
+        this.user = user;
+        this.type = activityType;
     }
 }

@@ -3,6 +3,7 @@ package com.sparta.springtrello.domain.advice;
 import com.sparta.springtrello.domain.advice.exception.BadRequestException;
 import com.sparta.springtrello.domain.advice.exception.DataAccessException;
 import com.sparta.springtrello.domain.advice.exception.NotFoundException;
+import com.sparta.springtrello.domain.advice.exception.UnAuthorizationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,5 +27,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ErrorMessage> handleDataAccessException(DataAccessException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorMessage(e.getMessage()));
+    }
+
+    @ExceptionHandler(UnAuthorizationException.class)
+    public ResponseEntity<ErrorMessage> handleUnAuthorizationException(UnAuthorizationException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorMessage(e.getMessage()));
     }
 }

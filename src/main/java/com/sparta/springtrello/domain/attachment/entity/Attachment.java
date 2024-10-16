@@ -5,12 +5,14 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
 @Getter
+@Setter
 public class Attachment {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -70,5 +72,10 @@ public class Attachment {
                 .deleteAt(null)
                 .card(card)
                 .build();
+    }
+
+    public void deleteAttachment(LocalDateTime deleteAt, AttachmentDeleteState isDelete) {
+        this.deleteAt = deleteAt;
+        this.isDelete = isDelete;
     }
 }

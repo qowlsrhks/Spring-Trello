@@ -14,4 +14,7 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     List<Card> findAllByCardList(CardList cardList);
 
     Page<Card> findByCardName(String cardName, Pageable pageable);
+
+    List<Card> findByCardListAndArchiveFalse(CardList cardList);
+
 }
