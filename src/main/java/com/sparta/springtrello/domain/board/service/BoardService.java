@@ -45,10 +45,10 @@ public class BoardService {
     public List<BoardResponseDto> getBoards(Long userId,Long workSpaceId) {
         userRepository.findById(userId).orElseThrow(()->
                 new IllegalArgumentException("해당 유저가 없습니다."));
-        workSpaceRepository.findById(workSpaceId).orElseThrow(()
+        WorkSpace workSpace = workSpaceRepository.findById(workSpaceId).orElseThrow(()
                 -> new IllegalArgumentException("존재하지 않는 워크스페이스입니다."));
-        List<Board> boards = boardRepository.findAll();
-        return boards.stream().map(BoardResponseDto::new).toList();
+        List<Board> boardList = boardRepository.findBoardByWorkSpace(workSpace);
+        return boardList.stream().map(BoardResponseDto::new).toList();
     }
 //    수정
     @Transactional
@@ -58,6 +58,7 @@ public class BoardService {
         board.update(boardRequestDto);
         return new BoardResponseDto(board);
     }
+
 //    삭제
     @Transactional
     public void deleteBoard(Long userId,Long workSpaceId,Long boardId) {

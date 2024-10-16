@@ -5,6 +5,8 @@ import com.sparta.springtrello.domain.cardList.dto.CardListRequestDto;
 import com.sparta.springtrello.domain.cardList.dto.CardListResponseDto;
 import com.sparta.springtrello.domain.cardList.entity.CardList;
 import com.sparta.springtrello.domain.cardList.service.CardListService;
+import com.sparta.springtrello.domain.common.Auth;
+import com.sparta.springtrello.domain.common.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +20,8 @@ public class CardListController {
     private final CardListService listService;
 
     @PostMapping("/list")
-    ResponseEntity<CardListResponseDto> createList(@RequestBody CardListRequestDto requestDto) {
-        CardListResponseDto responseDto = listService.createList(requestDto);
+    ResponseEntity<CardListResponseDto> createList(@RequestBody CardListRequestDto requestDto, @Auth AuthUser authUser) {
+        CardListResponseDto responseDto = listService.createList(requestDto, authUser);
         return ResponseEntity.ok(responseDto);
     }
 

@@ -2,15 +2,11 @@ package com.sparta.springtrello.domain.workspace.controller;
 
 import com.sparta.springtrello.domain.workspace.dto.WorkSpaceRequestDto;
 import com.sparta.springtrello.domain.workspace.dto.WorkSpaceResponseDto;
+import com.sparta.springtrello.domain.workspace.entity.MemberRole;
 import com.sparta.springtrello.domain.workspace.service.WorkSpaceService;
-import com.sparta.springtrello.domain.user.entity.User;
 import jakarta.validation.Valid;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,10 +40,18 @@ public class WorkspaceController {
     public ResponseEntity<WorkSpaceResponseDto> updateWorkSpace(@PathVariable("userId") Long userId,@PathVariable("wsId") Long workSpaceId,@Valid @RequestBody WorkSpaceRequestDto workSpaceRequestDto) {
         return ResponseEntity.ok(workSpaceService.updateWorkSpace(userId,workSpaceId,workSpaceRequestDto));
     }
+
+    @PostMapping("/{wsId}/members/{userId}")
+    public ResponseEntity<String> addMember(@PathVariable Long wsId, @PathVariable Long userId, @RequestParam MemberRole role) {
+        workSpaceService.addMember(wsId, userId, role);
+        return ResponseEntity.ok("멤버가 추가되었습니다.");
+    }
+
 //    삭제
     @DeleteMapping("/{userId}/{wsId}")
     public ResponseEntity<String> deleteWorkSpace(@PathVariable("userId") Long userId,@PathVariable("wsId") Long workSpaceId) {
         workSpaceService.deleteWorkSpace(userId,workSpaceId);
         return ResponseEntity.ok("삭제되었습니다.");
     }
+
 }
