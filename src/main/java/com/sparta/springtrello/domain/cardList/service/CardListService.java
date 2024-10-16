@@ -1,5 +1,7 @@
 package com.sparta.springtrello.domain.cardList.service;
 
+import com.sparta.springtrello.domain.board.entity.Board;
+import com.sparta.springtrello.domain.board.repository.BoardRepository;
 import com.sparta.springtrello.domain.cardList.dto.CardListArrangeRequestDto;
 import com.sparta.springtrello.domain.cardList.dto.CardListRequestDto;
 import com.sparta.springtrello.domain.cardList.dto.CardListResponseDto;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class CardListService {
     private final CardListRepository listRepository;
+    private final BoardRepository boardRepository;
 
     public CardListResponseDto createList(CardListRequestDto cardListRequestDto) {
         // next가 null인 어트리뷰트 찾아서 이어 붙이기.
@@ -161,7 +164,8 @@ public class CardListService {
     }
 
     public List<CardListResponseDto> viewAllListSortedByLinked(Long id) {
-        List<CardList> lists = listRepository.findAllByBoard(id);
+        Board board = boardRepository.findByBoardId(id);
+        List<CardList> lists = listRepository.findAllByBoard(board);
         CardList cardList = lists.stream()
                 .filter(cl -> cl.getPrevListId() == null).findFirst().orElseThrow(
                         () -> new IllegalArgumentException("비어있는 보드입니다.")
