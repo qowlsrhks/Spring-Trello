@@ -23,12 +23,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/workspaces/{wsId}/cards/{cardId}/attachments")
+@RequestMapping("/cards/{cardId}/attachments")
 public class AttachmentController {
 
     private final AttachmentService attachmentService;
 
-    @PostMapping
+    @PostMapping("/workspaces/{wsId}")
     public ResponseEntity<UploadAttachment> uploadAttachment(@Auth AuthUser authUser,
                                                              @PathVariable("wsId") Long workSpaceId,
                                                              @PathVariable Long cardId,
@@ -38,15 +38,13 @@ public class AttachmentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GetAttachment>> getAttachment(@PathVariable("wsId") Long workSpaceId,
-                                                             @PathVariable Long cardId) {
+    public ResponseEntity<List<GetAttachment>> getAttachment(@PathVariable Long cardId) {
         List<GetAttachment> getAttachment = attachmentService.getAttachment(cardId);
         return ResponseEntity.ok().body(getAttachment);
     }
 
     @GetMapping("/{attachmentId}/download")
-    public ResponseEntity<Resource> downloadAttachmentFile(@PathVariable("wsId") Long workSpaceId,
-                                                           @PathVariable Long cardId,
+    public ResponseEntity<Resource> downloadAttachmentFile(@PathVariable Long cardId,
                                                            @PathVariable Long attachmentId) throws MalformedURLException {
         Attachment attachment = attachmentService.downloadAttachment(cardId, attachmentId);
         UrlResource resource = new UrlResource("file:" + attachment.getFilePath());
@@ -61,12 +59,12 @@ public class AttachmentController {
                 .body(resource);
     }
 
-    @DeleteMapping("/{attachmentId}")
+    @PutMapping("/{attachmentId}/workspaces/{wsId}")
     public ResponseEntity<DeleteMessage> deleteAttachment(@Auth AuthUser authUser,
                                                           @PathVariable("wsId") Long workSpaceId,
                                                           @PathVariable Long cardId,
                                                           @PathVariable Long attachmentId) {
-        DeleteMessage deleteMessage = attachmentService.deleteAttachment(authUser, cardId, attachmentId);
+        DeleteMessage deleteMessage = attachmentService.deleteAttachment(authUser,workSpaceId, cardId, attachmentId);
         return ResponseEntity.ok().header(String.valueOf(HttpStatus.OK)).body(deleteMessage);
     }
 
