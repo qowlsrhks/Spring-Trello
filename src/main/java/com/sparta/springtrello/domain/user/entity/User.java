@@ -1,6 +1,13 @@
 package com.sparta.springtrello.domain.user.entity;
 
+
 import com.sparta.springtrello.domain.workspaceMember.entity.Wsmember;
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import com.sparta.springtrello.domain.board.entity.Board;
+import com.sparta.springtrello.domain.workspace.entity.WorkSpace;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +16,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Entity
 @Data
@@ -36,8 +42,13 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role; // USER 또는 OWNER
 
+
     @OneToMany(mappedBy = "user")
     private List<Wsmember> wsmember = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WorkSpace> boards = new ArrayList<>();
+
 
 
     @Column
