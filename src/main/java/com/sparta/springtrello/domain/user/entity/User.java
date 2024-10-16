@@ -23,7 +23,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long user_id; // 이메일로 사용자 ID 설정
+    private Long id; // 이메일로 사용자 ID 설정
 
     @Column(nullable = false)
     private String password;
@@ -55,7 +55,7 @@ public class User {
 
     // 테스트를 하기 위함
     private User(Long user_id, String email, Role role) {
-        this.user_id = user_id;
+        this.id = user_id;
         this.email = email;
         this.role = role;
     }

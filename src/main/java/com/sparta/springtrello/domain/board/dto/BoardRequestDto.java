@@ -7,14 +7,11 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class BoardRequestDto {
+public class BoardRequestDto{
 
     @NotBlank
     private String boardTitle;
     @NotBlank
     private String boardDescription;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
 
 }
