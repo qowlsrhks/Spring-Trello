@@ -1,6 +1,6 @@
-package com.sparta.springtrello.user.config;
+package com.sparta.springtrello.domain.user.config;
 
-import com.sparta.springtrello.user.entity.Role;
+import com.sparta.springtrello.domain.user.entity.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;

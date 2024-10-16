@@ -1,4 +1,4 @@
-package com.sparta.springtrello.user.dto;
+package com.sparta.springtrello.domain.user.dto;
 
 import lombok.AccessLevel;
 import lombok.Getter;

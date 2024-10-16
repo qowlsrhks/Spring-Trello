@@ -1,10 +1,9 @@
-package com.sparta.springtrello.user.entity;
+package com.sparta.springtrello.domain.user.entity;
 
-import com.sparta.springtrello.workspaceMember.entity.Wsmember;
+import com.sparta.springtrello.domain.workspaceMember.entity.Wsmember;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 
 
 import java.time.LocalDateTime;

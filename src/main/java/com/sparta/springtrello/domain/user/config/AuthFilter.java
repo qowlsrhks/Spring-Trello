@@ -1,6 +1,6 @@
-package com.sparta.springtrello.user.config;
+package com.sparta.springtrello.domain.user.config;
 
-import com.sparta.springtrello.user.repository.UserRepository;
+import com.sparta.springtrello.domain.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;

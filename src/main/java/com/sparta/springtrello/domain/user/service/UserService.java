@@ -1,11 +1,11 @@
-package com.sparta.springtrello.user.service;
+package com.sparta.springtrello.domain.user.service;
 
-import com.sparta.springtrello.user.config.JwtUtil;
-import com.sparta.springtrello.user.config.PasswordEncoder;
-import com.sparta.springtrello.user.dto.LoginRequestDto;
-import com.sparta.springtrello.user.entity.Role;
-import com.sparta.springtrello.user.entity.User;
-import com.sparta.springtrello.user.repository.UserRepository;
+import com.sparta.springtrello.domain.user.config.JwtUtil;
+import com.sparta.springtrello.domain.user.config.PasswordEncoder;
+import com.sparta.springtrello.domain.user.dto.LoginRequestDto;
+import com.sparta.springtrello.domain.user.entity.Role;
+import com.sparta.springtrello.domain.user.entity.User;
+import com.sparta.springtrello.domain.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

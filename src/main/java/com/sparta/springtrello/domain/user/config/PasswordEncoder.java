@@ -1,4 +1,4 @@
-package com.sparta.springtrello.user.config;
+package com.sparta.springtrello.domain.user.config;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;

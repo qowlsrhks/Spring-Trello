@@ -1,11 +1,11 @@
-package com.sparta.springtrello.user.controller;
+package com.sparta.springtrello.domain.user.controller;
 
-import com.sparta.springtrello.user.config.JwtUtil;
-import com.sparta.springtrello.user.dto.DeleteRequestDto;
-import com.sparta.springtrello.user.dto.LoginRequestDto;
-import com.sparta.springtrello.user.dto.SignupRequestDto;
-import com.sparta.springtrello.user.entity.Role;
-import com.sparta.springtrello.user.service.UserService;
+import com.sparta.springtrello.domain.user.config.JwtUtil;
+import com.sparta.springtrello.domain.user.dto.DeleteRequestDto;
+import com.sparta.springtrello.domain.user.dto.LoginRequestDto;
+import com.sparta.springtrello.domain.user.dto.SignupRequestDto;
+import com.sparta.springtrello.domain.user.entity.Role;
+import com.sparta.springtrello.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
