@@ -42,11 +42,9 @@ public class AttachmentService {
 
     private final AttachmentRepository attachmentRepository;
     private final CardRepository cardRepository;
-    private final CardListRepository cardListRepository;
-    private final BoardRepository boardRepository;
 
     @Transactional
-    public UploadAttachment uploadAttachment(AuthUser authUser, Long cardId, MultipartFile file) throws IOException {
+    public UploadAttachment uploadAttachment(AuthUser authUser,Long wordSpaceId, Long cardId, MultipartFile file) throws IOException {
         if(file.isEmpty()){
             log.error("File is empty");
             throw new FileBadRequestException("업로드 할 파일이 없습니다.");
@@ -54,12 +52,6 @@ public class AttachmentService {
 
         Card card = cardRepository.findById(cardId).orElseThrow(
                 () -> new CardNotFoundException("카드를 찾을 수 없습니다.")
-        );
-        CardList cardList = cardListRepository.findById(card.getCardList().getListId()).orElseThrow(
-                () -> new CardListNotFoundException("리스트를 찾을 수 없습니다.")
-        );
-        Board board = boardRepository.findById(cardList.getBoard().getBoardId()).orElseThrow(
-                () -> new BoardNotFoundException("보드를 찾을 수 없습니다.")
         );
 
         //유저 역할 읽기 전용 예외처리

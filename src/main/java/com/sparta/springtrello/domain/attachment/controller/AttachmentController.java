@@ -23,25 +23,31 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/cards/{cardId}/attachments")
+@RequestMapping("/workspaces/{wsId}/cards/{cardId}/attachments")
 public class AttachmentController {
 
     private final AttachmentService attachmentService;
 
     @PostMapping
-    public ResponseEntity<UploadAttachment> uploadAttachment(@Auth AuthUser authUser, @PathVariable Long cardId, @RequestPart("file") MultipartFile file) throws IOException {
-        UploadAttachment uploadAttachment = attachmentService.uploadAttachment(authUser,cardId, file);
+    public ResponseEntity<UploadAttachment> uploadAttachment(@Auth AuthUser authUser,
+                                                             @PathVariable("wsId") Long workSpaceId,
+                                                             @PathVariable Long cardId,
+                                                             @RequestPart("file") MultipartFile file) throws IOException {
+        UploadAttachment uploadAttachment = attachmentService.uploadAttachment(authUser,workSpaceId, cardId, file);
         return ResponseEntity.ok().header(String.valueOf(HttpStatus.OK)).body(uploadAttachment);
     }
 
     @GetMapping
-    public ResponseEntity<List<GetAttachment>> getAttachment(@PathVariable Long cardId) {
+    public ResponseEntity<List<GetAttachment>> getAttachment(@PathVariable("wsId") Long workSpaceId,
+                                                             @PathVariable Long cardId) {
         List<GetAttachment> getAttachment = attachmentService.getAttachment(cardId);
         return ResponseEntity.ok().body(getAttachment);
     }
 
     @GetMapping("/{attachmentId}/download")
-    public ResponseEntity<Resource> downloadAttachmentFile(@PathVariable Long cardId, @PathVariable Long attachmentId) throws MalformedURLException {
+    public ResponseEntity<Resource> downloadAttachmentFile(@PathVariable("wsId") Long workSpaceId,
+                                                           @PathVariable Long cardId,
+                                                           @PathVariable Long attachmentId) throws MalformedURLException {
         Attachment attachment = attachmentService.downloadAttachment(cardId, attachmentId);
         UrlResource resource = new UrlResource("file:" + attachment.getFilePath());
         String originalFileName = attachment.getOriginalFilename();
@@ -56,7 +62,10 @@ public class AttachmentController {
     }
 
     @DeleteMapping("/{attachmentId}")
-    public ResponseEntity<DeleteMessage> deleteAttachment(@Auth AuthUser authUser, @PathVariable Long cardId, @PathVariable Long attachmentId) {
+    public ResponseEntity<DeleteMessage> deleteAttachment(@Auth AuthUser authUser,
+                                                          @PathVariable("wsId") Long workSpaceId,
+                                                          @PathVariable Long cardId,
+                                                          @PathVariable Long attachmentId) {
         DeleteMessage deleteMessage = attachmentService.deleteAttachment(authUser, cardId, attachmentId);
         return ResponseEntity.ok().header(String.valueOf(HttpStatus.OK)).body(deleteMessage);
     }
