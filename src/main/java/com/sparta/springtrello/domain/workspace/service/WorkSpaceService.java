@@ -25,7 +25,6 @@ public class WorkSpaceService {
     public WorkSpaceResponseDto createWorkSpace(Long userId, WorkSpaceRequestDto workSpaceRequestDto) {
         User user = userRepository.findById(userId).orElseThrow(()->
                 new IllegalArgumentException("해당 유저가 없습니다."));
-
         if(user.getRole().equals(Role.USER)) {
             throw new IllegalArgumentException("권한이 없습니다");
         }
@@ -41,8 +40,10 @@ public class WorkSpaceService {
         userRepository.findById(userId).orElseThrow(()->
                 new IllegalArgumentException("해당 유저가 없습니다."));
         WorkSpace workSpace = workSpaceRepository.findById(workSpaceId).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 워크스페이스입니다.")
-        );
+                () -> new IllegalArgumentException("존재하지 않는 워크스페이스입니다."));
+        if(!workSpace.getUser().getId().equals(userId)) {
+            throw new IllegalArgumentException("권한이 없는 워크스페이스입니다.");
+        }
         workSpace.update(workSpaceRequestDto);
         workSpaceRepository.save(workSpace);
         return new WorkSpaceResponseDto(workSpace);
@@ -52,10 +53,13 @@ public class WorkSpaceService {
     public WorkSpaceResponseDto getWorkSpace(Long userId,Long workSpaceId) {
         userRepository.findById(userId).orElseThrow(()->
                 new IllegalArgumentException("해당 유저가 없습니다."));
-
         WorkSpace workSpace = workSpaceRepository.findById(workSpaceId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 워크스페이스입니다.")
         );
+        if(!workSpace.getUser().getId().equals(userId)) {
+            throw new IllegalArgumentException("권한이 없는 워크스페이스입니다.");
+        }
+
         return new WorkSpaceResponseDto(workSpace);
 
     }
@@ -63,8 +67,8 @@ public class WorkSpaceService {
     public List<WorkSpaceResponseDto> getWorkSpaces(Long userId) {
         userRepository.findById(userId).orElseThrow(()->
                 new IllegalArgumentException("해당 유저가 없습니다."));
+        List<WorkSpace> workSpaces = workSpaceRepository.findWorkSpaceByUserId(userId);
 
-        List<WorkSpace> workSpaces = workSpaceRepository.findAll();
         return workSpaces.stream().map(WorkSpaceResponseDto::new).toList();
     }
 
@@ -74,8 +78,11 @@ public class WorkSpaceService {
         userRepository.findById(userId).orElseThrow(()->
                 new IllegalArgumentException("해당 유저가 없습니다."));
         WorkSpace workSpace = workSpaceRepository.findById(workSpaceId).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 워크스페이스입니다.")
-        );
+                () -> new IllegalArgumentException("존재하지 않는 워크스페이스입니다."));
+
+        if(!workSpace.getUser().getId().equals(userId)) {
+            throw new IllegalArgumentException("권한이 없는 워크스페이스입니다.");
+        }
         workSpaceRepository.delete(workSpace);
     }
 }
