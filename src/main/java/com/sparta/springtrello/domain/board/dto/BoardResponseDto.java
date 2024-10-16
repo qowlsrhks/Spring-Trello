@@ -3,7 +3,6 @@ package com.sparta.springtrello.domain.board.dto;
 import com.sparta.springtrello.domain.board.entity.Board;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 
 @Data
 public class BoardResponseDto {
