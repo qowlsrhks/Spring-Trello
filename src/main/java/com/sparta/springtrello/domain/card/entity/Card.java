@@ -20,6 +20,8 @@ public class Card extends Timestamped {
     private LocalDateTime closingAt;
     private Long prevCardId;
     private Long nextCardId;
+    private boolean checked = false;
+    // 체크박스 만들기
 
     @ManyToOne
     @JoinColumn(name = "listId")

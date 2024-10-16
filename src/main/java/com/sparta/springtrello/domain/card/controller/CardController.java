@@ -42,4 +42,10 @@ public class CardController {
         Long id = cardService.arrangeCard(requestDto, email);
         return ResponseEntity.ok(id);
     }
+
+    @PostMapping("/list/card/{id}")
+    public ResponseEntity<CardResponseDto> checkCard(@PathVariable Long id){
+        CardResponseDto responseDto = cardService.checkCard(id);
+        return ResponseEntity.ok(responseDto);
+    }
 }
