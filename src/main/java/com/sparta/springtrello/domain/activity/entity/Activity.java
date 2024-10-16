@@ -4,7 +4,7 @@ import com.sparta.springtrello.domain.card.entity.Card;
 import com.sparta.springtrello.domain.cardList.entity.CardList;
 import com.sparta.springtrello.domain.comment.entity.Comment;
 import com.sparta.springtrello.domain.common.Timestamped;
-import com.sparta.springtrello.user.entity.User;
+import com.sparta.springtrello.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
