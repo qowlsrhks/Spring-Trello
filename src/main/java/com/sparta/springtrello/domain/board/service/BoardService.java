@@ -6,7 +6,7 @@ import com.sparta.springtrello.domain.board.entity.Board;
 import com.sparta.springtrello.domain.board.repository.BoardRepository;
 import com.sparta.springtrello.domain.workspace.entity.WorkSpace;
 import com.sparta.springtrello.domain.workspace.repository.WorkSpaceRepository;
-import com.sparta.springtrello.user.repository.UserRepository;
+import com.sparta.springtrello.domain.user.repository.UserRepository;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

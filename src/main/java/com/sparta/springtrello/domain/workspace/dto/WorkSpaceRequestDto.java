@@ -15,5 +15,8 @@ public class WorkSpaceRequestDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
+    private LocalDateTime createdAt;
+
+    private LocalDateTime modifiedAt;
 
 }
