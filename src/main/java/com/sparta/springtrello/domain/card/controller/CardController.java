@@ -7,6 +7,7 @@ import com.sparta.springtrello.domain.card.dto.CardUpdateRequestDto;
 import com.sparta.springtrello.domain.card.service.CardService;
 import com.sparta.springtrello.domain.common.Auth;
 import com.sparta.springtrello.domain.common.AuthUser;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,8 +39,9 @@ public class CardController {
     }
 
     @PatchMapping("/list/card")
-    public ResponseEntity<Long> arrangeCard(@RequestBody CardArrangeRequestDto requestDto){
-        Long id = cardService.arrangeCard(requestDto);
+    public ResponseEntity<Long> arrangeCard(@RequestBody CardArrangeRequestDto requestDto, HttpServletRequest request){
+        String email = (String) request.getAttribute("email");
+        Long id = cardService.arrangeCard(requestDto, email);
         return ResponseEntity.ok(id);
     }
 
