@@ -7,6 +7,7 @@ import com.sparta.springtrello.domain.cardList.dto.CardListRequestDto;
 import com.sparta.springtrello.domain.cardList.dto.CardListResponseDto;
 import com.sparta.springtrello.domain.cardList.entity.CardList;
 import com.sparta.springtrello.domain.cardList.repository.CardListRepository;
+import com.sparta.springtrello.domain.common.AuthUser;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,9 +22,10 @@ public class CardListService {
     private final CardListRepository listRepository;
     private final BoardRepository boardRepository;
 
-    public CardListResponseDto createList(CardListRequestDto cardListRequestDto) {
+    public CardListResponseDto createList(CardListRequestDto cardListRequestDto, AuthUser authUser) {
         // next가 null인 어트리뷰트 찾아서 이어 붙이기.
-
+        // 멤버 권한 검증
+        // 유저 정보 전달
         List<CardList> lastList = listRepository.findAll()
                 .stream().filter(cl -> cl.getNextListId() == null)
                 .toList();

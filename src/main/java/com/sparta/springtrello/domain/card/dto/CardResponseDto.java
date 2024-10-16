@@ -1,10 +1,12 @@
 package com.sparta.springtrello.domain.card.dto;
 
 import com.sparta.springtrello.domain.card.entity.Card;
+import com.sparta.springtrello.domain.user.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,6 +22,7 @@ public class CardResponseDto {
         this.nextCardId = card.getNextCardId();
         this.listId = card.getCardList().getListId();
         this.check = card.isChecked();
+        this.users = card.getUsers();
     }
 
     private Long cardId;
@@ -32,4 +35,5 @@ public class CardResponseDto {
     private Long nextCardId;
     private Long listId;
     private boolean check;
+    private List<User> users;
 }

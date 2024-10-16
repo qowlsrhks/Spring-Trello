@@ -26,5 +26,4 @@ public class CardList extends Timestamped {
 
     @OneToMany(mappedBy = "cardList", fetch = FetchType.LAZY)
     private List<Card> cards;
-
 }
