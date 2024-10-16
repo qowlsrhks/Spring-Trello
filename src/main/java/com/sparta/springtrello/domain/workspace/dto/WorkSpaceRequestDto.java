@@ -13,5 +13,8 @@ public class WorkSpaceRequestDto {
     @NotBlank
     private String workspaceDescription;
 
+    private LocalDateTime createdAt;
+
+    private LocalDateTime modifiedAt;
 
 }

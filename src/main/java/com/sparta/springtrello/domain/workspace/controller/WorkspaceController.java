@@ -3,7 +3,7 @@ package com.sparta.springtrello.domain.workspace.controller;
 import com.sparta.springtrello.domain.workspace.dto.WorkSpaceRequestDto;
 import com.sparta.springtrello.domain.workspace.dto.WorkSpaceResponseDto;
 import com.sparta.springtrello.domain.workspace.service.WorkSpaceService;
-import com.sparta.springtrello.user.entity.User;
+import com.sparta.springtrello.domain.user.entity.User;
 import jakarta.validation.Valid;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;

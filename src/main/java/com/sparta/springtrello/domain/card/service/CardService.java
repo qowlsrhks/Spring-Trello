@@ -9,7 +9,6 @@ import com.sparta.springtrello.domain.card.repository.CardRepository;
 import com.sparta.springtrello.domain.cardList.dto.CardListResponseDto;
 import com.sparta.springtrello.domain.cardList.entity.CardList;
 import com.sparta.springtrello.domain.cardList.repository.CardListRepository;
-import com.sparta.springtrello.user.entity.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

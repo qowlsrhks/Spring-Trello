@@ -3,7 +3,7 @@ package com.sparta.springtrello.domain.workspace.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sparta.springtrello.domain.board.entity.Board;
 import com.sparta.springtrello.domain.workspace.dto.WorkSpaceRequestDto;
-import com.sparta.springtrello.user.entity.User;
+import com.sparta.springtrello.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
