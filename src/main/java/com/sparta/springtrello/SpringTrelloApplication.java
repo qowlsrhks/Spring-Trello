@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class )
 @EnableJpaAuditing
+
 public class SpringTrelloApplication {
 
     public static void main(String[] args) {

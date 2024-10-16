@@ -29,9 +29,9 @@ public class CardListController {
         return ResponseEntity.ok(deletedId);
     }
 
-    @GetMapping("/list")
-    ResponseEntity<List<CardListResponseDto>> getAllLists() {
-        List<CardListResponseDto> responseDtos = listService.viewAllListSortedByLinked();
+    @GetMapping("/list/{id}")
+    ResponseEntity<List<CardListResponseDto>> getAllLists(@PathVariable Long id) {
+        List<CardListResponseDto> responseDtos = listService.viewAllListSortedByLinked(id);
         return ResponseEntity.ok(responseDtos);
     }
 
