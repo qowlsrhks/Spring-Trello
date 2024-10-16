@@ -195,4 +195,7 @@ public class CardService {
         Card checkedCard = cardRepository.save(card);
         return new CardResponseDto(checkedCard);
     }
+
+
+    // 유저 정보 받고 검증
 }

@@ -45,4 +45,7 @@ public class CardController {
         CardResponseDto responseDto = cardService.checkCard(id);
         return ResponseEntity.ok(responseDto);
     }
+
+
+    // 유저정보 받게 만들기
 }

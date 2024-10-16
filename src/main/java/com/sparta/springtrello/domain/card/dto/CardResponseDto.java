@@ -19,6 +19,7 @@ public class CardResponseDto {
         this.prevCardId = card.getPrevCardId();
         this.nextCardId = card.getNextCardId();
         this.listId = card.getCardList().getListId();
+        this.check = card.isChecked();
     }
 
     private Long cardId;
@@ -30,4 +31,5 @@ public class CardResponseDto {
     private Long prevCardId;
     private Long nextCardId;
     private Long listId;
+    private boolean check;
 }
