@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sparta.springtrello.domain.board.entity.Board;
 import com.sparta.springtrello.domain.workspace.dto.WorkSpaceRequestDto;
 import com.sparta.springtrello.domain.user.entity.User;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,6 +42,8 @@ public class WorkSpace {
     @JsonBackReference
     private User user;
 
+
+
     @OneToMany(mappedBy = "workSpace", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
     private List<Board> boards = new ArrayList<>();
@@ -48,13 +51,13 @@ public class WorkSpace {
     public WorkSpace(WorkSpaceRequestDto workSpaceRequestDto){
         this.workspaceName = workSpaceRequestDto.getWorkspaceName();
         this.workspaceDescription = workSpaceRequestDto.getWorkspaceDescription();
-        //this.createdAt = workSpaceRequestDto.getCreatedAt();
-       // this.modifiedAt = workSpaceRequestDto.getModifiedAt();
+        this.createdAt = workSpaceRequestDto.getCreatedAt();
+        this.modifiedAt = workSpaceRequestDto.getModifiedAt();
     }
 
     public void update(WorkSpaceRequestDto workSpaceRequestDto){
         this.workspaceName = workSpaceRequestDto.getWorkspaceName();
         this.workspaceDescription = workSpaceRequestDto.getWorkspaceDescription();
-        //this.modifiedAt = workSpaceRequestDto.getModifiedAt();
+        this.modifiedAt = workSpaceRequestDto.getModifiedAt();
     }
 }
