@@ -1,6 +1,6 @@
 package com.sparta.springtrello.domain.card.service;
 
-import com.sparta.springtrello.domain.activity.entity.ActivityLogger;
+import com.sparta.springtrello.domain.activity.common.ActivityLogger;
 import com.sparta.springtrello.domain.card.dto.CardArrangeRequestDto;
 import com.sparta.springtrello.domain.card.dto.CardRequestDto;
 import com.sparta.springtrello.domain.card.dto.CardResponseDto;
@@ -65,6 +65,7 @@ public class CardService {
             }
         }
 
+        activityLogger.logCardCreated(card, user);
         return new CardResponseDto(savedCard);
     }
 
@@ -125,7 +126,7 @@ public class CardService {
         return responseDtoList;
     }
 
-    public Long arrangeCard(CardArrangeRequestDto requestDto) {
+    public Long arrangeCard(CardArrangeRequestDto requestDto, String email) {
         Long prevCardId = requestDto.getPrevCardId();
         Long cardId = requestDto.getCardId();
 
@@ -133,6 +134,10 @@ public class CardService {
                 () -> new IllegalArgumentException("존재하지 않는 카드 ID 입니다.")
         );
 
+        User user = userRepository.findByEmail(email).orElseThrow(
+                ()-> new IllegalArgumentException("권한이 없습니다."));
+
+        CardList fromCardList = card.getCardList();
         CardList toCardList = listRepository.findById(requestDto.getToListId()).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 리스트 ID 입니다.")
         );
@@ -198,6 +203,7 @@ public class CardService {
             }
         }
         card.setCardList(toCardList);
+        activityLogger.logCardMoved(card, user, fromCardList.getListName(), toCardList.getListName());
 
         return cardRepository.save(card).getCardId();
     }
