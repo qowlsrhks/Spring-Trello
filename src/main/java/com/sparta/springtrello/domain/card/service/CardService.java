@@ -182,7 +182,6 @@ public class CardService {
                 cardRepository.save(prevCard);
             }
         }
-
         card.setCardList(toCardList);
 
         return cardRepository.save(card).getCardId();
