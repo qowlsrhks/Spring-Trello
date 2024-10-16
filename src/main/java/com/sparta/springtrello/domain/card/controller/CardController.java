@@ -3,7 +3,10 @@ package com.sparta.springtrello.domain.card.controller;
 import com.sparta.springtrello.domain.card.dto.CardArrangeRequestDto;
 import com.sparta.springtrello.domain.card.dto.CardRequestDto;
 import com.sparta.springtrello.domain.card.dto.CardResponseDto;
+import com.sparta.springtrello.domain.card.dto.CardUpdateRequestDto;
 import com.sparta.springtrello.domain.card.service.CardService;
+import com.sparta.springtrello.domain.common.Auth;
+import com.sparta.springtrello.domain.common.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +20,8 @@ public class CardController {
     private final CardService cardService;
 
     @PostMapping("/list/{id}/card")
-    public ResponseEntity<CardResponseDto> createCard(@PathVariable("id") Long id, @RequestBody CardRequestDto requestDto){
-        CardResponseDto responseDto = cardService.createCard(id, requestDto);
+    public ResponseEntity<CardResponseDto> createCard(@PathVariable("id") Long id, @RequestBody CardRequestDto requestDto, @Auth AuthUser authUser){
+        CardResponseDto responseDto = cardService.createCard(id, requestDto, authUser);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -43,6 +46,15 @@ public class CardController {
     @PostMapping("/list/card/{id}")
     public ResponseEntity<CardResponseDto> checkCard(@PathVariable Long id){
         CardResponseDto responseDto = cardService.checkCard(id);
+        return ResponseEntity.ok(responseDto);
+    }
+
+
+    // 담당자 멤버 추가 api
+
+    @PatchMapping("list/card/{id}")
+    public ResponseEntity<CardResponseDto> updateCard(@PathVariable Long id, @RequestBody CardUpdateRequestDto requestDto, @Auth AuthUser authUser){
+        CardResponseDto responseDto = cardService.updateCard(id, requestDto, authUser);
         return ResponseEntity.ok(responseDto);
     }
 }
