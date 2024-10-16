@@ -1,10 +1,13 @@
 package com.sparta.springtrello.domain.workspace.service;
 
+import com.sparta.springtrello.domain.user.entity.Role;
 import com.sparta.springtrello.domain.workspace.dto.WorkSpaceRequestDto;
 import com.sparta.springtrello.domain.workspace.dto.WorkSpaceResponseDto;
 import com.sparta.springtrello.domain.workspace.entity.WorkSpace;
 import com.sparta.springtrello.domain.workspace.repository.WorkSpaceRepository;
+
 import com.sparta.springtrello.domain.user.entity.Role;
+
 import com.sparta.springtrello.domain.user.entity.User;
 import com.sparta.springtrello.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

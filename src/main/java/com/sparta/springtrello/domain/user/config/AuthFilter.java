@@ -19,7 +19,7 @@ public class AuthFilter implements Filter {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
-    public AuthFilter(UserRepository userRepository, JwtUtil jwtUtil) {
+    AuthFilter(UserRepository userRepository, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
     }

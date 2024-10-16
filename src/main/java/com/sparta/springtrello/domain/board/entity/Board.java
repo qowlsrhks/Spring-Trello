@@ -2,6 +2,7 @@ package com.sparta.springtrello.domain.board.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sparta.springtrello.domain.board.dto.BoardRequestDto;
+import com.sparta.springtrello.domain.cardList.entity.CardList;
 import com.sparta.springtrello.domain.workspace.entity.WorkSpace;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -40,6 +42,10 @@ public class Board {
     @JsonBackReference
     private WorkSpace workSpace;
 
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
+    private List<CardList> cardLists;
+
+
     public Board(BoardRequestDto boardRequestDto) {
         this.boardTitle = boardRequestDto.getBoardTitle();
         this.boardDescription = boardRequestDto.getBoardDescription();
@@ -54,3 +60,4 @@ public class Board {
     }
 
 }
+
