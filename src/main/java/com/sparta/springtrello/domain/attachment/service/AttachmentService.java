@@ -8,6 +8,12 @@ import com.sparta.springtrello.domain.attachment.exception.AttachmentDataAccessE
 import com.sparta.springtrello.domain.attachment.exception.AttachmentNotFoundException;
 import com.sparta.springtrello.domain.attachment.exception.FileBadRequestException;
 import com.sparta.springtrello.domain.attachment.repository.AttachmentRepository;
+import com.sparta.springtrello.domain.board.entity.Board;
+import com.sparta.springtrello.domain.board.exception.BoardNotFoundException;
+import com.sparta.springtrello.domain.board.repository.BoardRepository;
+import com.sparta.springtrello.domain.cardList.entity.CardList;
+import com.sparta.springtrello.domain.cardList.exception.CardListNotFoundException;
+import com.sparta.springtrello.domain.cardList.repository.CardListRepository;
 import com.sparta.springtrello.domain.common.AuthUser;
 import com.sparta.springtrello.domain.card.entity.Card;
 import com.sparta.springtrello.domain.card.exception.CardNotFoundException;
@@ -36,6 +42,8 @@ public class AttachmentService {
 
     private final AttachmentRepository attachmentRepository;
     private final CardRepository cardRepository;
+    private final CardListRepository cardListRepository;
+    private final BoardRepository boardRepository;
 
     @Transactional
     public UploadAttachment uploadAttachment(AuthUser authUser, Long cardId, MultipartFile file) throws IOException {
@@ -44,11 +52,17 @@ public class AttachmentService {
             throw new FileBadRequestException("업로드 할 파일이 없습니다.");
         }
 
-        //유저 역할 읽기 전용 예외처리
-
         Card card = cardRepository.findById(cardId).orElseThrow(
                 () -> new CardNotFoundException("카드를 찾을 수 없습니다.")
         );
+        CardList cardList = cardListRepository.findById(card.getCardList().getListId()).orElseThrow(
+                () -> new CardListNotFoundException("리스트를 찾을 수 없습니다.")
+        );
+        Board board = boardRepository.findById(cardList.getBoard().getBoardId()).orElseThrow(
+                () -> new BoardNotFoundException("보드를 찾을 수 없습니다.")
+        );
+
+        //유저 역할 읽기 전용 예외처리
 
         String fileName = file.getOriginalFilename();
         log.info("originalFilename : {}", fileName);
