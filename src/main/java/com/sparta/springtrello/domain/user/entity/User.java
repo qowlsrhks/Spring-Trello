@@ -1,10 +1,17 @@
 package com.sparta.springtrello.domain.user.entity;
 
+
+
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import com.sparta.springtrello.domain.workspace.entity.WorkSpace;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.*;
+
 
 import java.time.LocalDateTime;
 
@@ -33,9 +40,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role; // USER 또는 OWNER
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<WorkSpace> boards = new ArrayList<>();
-
 
     @Column
     private boolean isDeleted = false; // 탈퇴 여부
@@ -50,8 +54,8 @@ public class User {
     }
 
     // 테스트를 하기 위함
-    private User(Long id, String email, Role role) {
-        this.id = id;
+    private User(Long user_id, String email, Role role) {
+        this.id = user_id;
         this.email = email;
         this.role = role;
     }
