@@ -7,7 +7,6 @@ import com.sparta.springtrello.domain.cardList.entity.CardList;
 import com.sparta.springtrello.domain.cardList.repository.CardListRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -161,8 +160,8 @@ public class CardListService {
         return cardListResponseDtoList;
     }
 
-    public List<CardListResponseDto> viewAllListSortedByLinked() {
-        List<CardList> lists = listRepository.findAll();
+    public List<CardListResponseDto> viewAllListSortedByLinked(Long id) {
+        List<CardList> lists = listRepository.findAllByBoard(id);
         CardList cardList = lists.stream()
                 .filter(cl -> cl.getPrevListId() == null).findFirst().orElseThrow(
                         () -> new IllegalArgumentException("비어있는 보드입니다.")

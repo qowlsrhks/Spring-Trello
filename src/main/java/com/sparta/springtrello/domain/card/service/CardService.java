@@ -187,4 +187,13 @@ public class CardService {
 
         return cardRepository.save(card).getCardId();
     }
+
+    public CardResponseDto checkCard(Long id) {
+        Card card = cardRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 카드 ID 입니다.")
+        );
+        card.setChecked(!card.isChecked());
+        Card checkedCard = cardRepository.save(card);
+        return new CardResponseDto(checkedCard);
+    }
 }
