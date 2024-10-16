@@ -2,6 +2,7 @@ package com.sparta.springtrello.domain.workspace.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sparta.springtrello.domain.board.entity.Board;
+import com.sparta.springtrello.domain.common.Timestamped;
 import com.sparta.springtrello.domain.workspace.dto.WorkSpaceRequestDto;
 import com.sparta.springtrello.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -19,7 +20,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Table(name = "workspace")
-public class WorkSpace {
+    public class WorkSpace extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long workspaceId;
@@ -30,11 +31,6 @@ public class WorkSpace {
     @Column(name = "workspace_description", nullable = false)
     private String workspaceDescription;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "modified_at")
-    private LocalDateTime modifiedAt;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id", nullable = false)
@@ -48,13 +44,10 @@ public class WorkSpace {
     public WorkSpace(WorkSpaceRequestDto workSpaceRequestDto){
         this.workspaceName = workSpaceRequestDto.getWorkspaceName();
         this.workspaceDescription = workSpaceRequestDto.getWorkspaceDescription();
-        this.createdAt = workSpaceRequestDto.getCreatedAt();
-        this.modifiedAt = workSpaceRequestDto.getModifiedAt();
     }
 
     public void update(WorkSpaceRequestDto workSpaceRequestDto){
         this.workspaceName = workSpaceRequestDto.getWorkspaceName();
         this.workspaceDescription = workSpaceRequestDto.getWorkspaceDescription();
-        this.modifiedAt = workSpaceRequestDto.getModifiedAt();
     }
 }
