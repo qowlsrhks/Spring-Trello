@@ -1,5 +1,6 @@
 package com.sparta.springtrello.domain.card.service;
 
+import com.sparta.springtrello.domain.activity.entity.ActivityLogger;
 import com.sparta.springtrello.domain.card.dto.CardArrangeRequestDto;
 import com.sparta.springtrello.domain.card.dto.CardRequestDto;
 import com.sparta.springtrello.domain.card.dto.CardResponseDto;
@@ -21,12 +22,12 @@ import java.util.stream.Collectors;
 public class CardService {
     private final CardRepository cardRepository;
     private final CardListRepository listRepository;
+    private final ActivityLogger activityLogger;
 
     public CardResponseDto createCard(Long id, CardRequestDto requestDto) {
         CardList cardList = listRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 리스트입니다.")
         );
-
         Card card = new Card();
         card.setCardName(requestDto.getCardName());
         card.setCardDescription(requestDto.getCardDescription());
