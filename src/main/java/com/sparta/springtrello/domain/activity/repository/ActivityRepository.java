@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ActivityRepository extends JpaRepository<Activity, Long> {
-    @Query("select c from Comment c join fetch c.user where c.card = :card")
+    @Query("select c from Activity c join fetch c.user where c.card = :card")
     List<Activity> findByCardOrderByCreatedAtDesc(@Param("card") Card card);
 
 }

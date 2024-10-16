@@ -29,10 +29,6 @@ public class Activity extends Timestamped {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_id")
-    private Comment comment;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ActivityType type;

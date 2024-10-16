@@ -10,11 +10,9 @@ import lombok.Getter;
 public class ActivityResponseDto {
     private Long id;
     private String activity;
-    private String comments;
 
     public ActivityResponseDto(Activity activity) {
         this.id = activity.getId();
         this.activity = activity.getContents();
-        this.comments = activity.getComment().toString();
     }
 }
