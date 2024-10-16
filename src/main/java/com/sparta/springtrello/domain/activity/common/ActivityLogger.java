@@ -4,7 +4,7 @@ import com.sparta.springtrello.domain.activity.entity.ActivityType;
 import com.sparta.springtrello.domain.activity.service.ActivityService;
 import com.sparta.springtrello.domain.card.entity.Card;
 import com.sparta.springtrello.domain.cardList.entity.CardList;
-import com.sparta.springtrello.user.entity.User;
+import com.sparta.springtrello.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
