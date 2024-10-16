@@ -32,4 +32,11 @@ public class UploadAttachment {
                 .build();
     }
 
+
+    public static UploadAttachment testAttachment(Long attachmentId) {
+        return UploadAttachment.builder()
+                .attachmentId(attachmentId)
+                .build();
+    }
+
 }

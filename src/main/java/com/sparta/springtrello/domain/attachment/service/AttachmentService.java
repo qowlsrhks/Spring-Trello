@@ -1,5 +1,7 @@
 package com.sparta.springtrello.domain.attachment.service;
 
+import com.sparta.springtrello.domain.advice.exception.NotFoundException;
+import com.sparta.springtrello.domain.advice.exception.UnAuthorizationException;
 import com.sparta.springtrello.domain.attachment.dto.response.DeleteMessage;
 import com.sparta.springtrello.domain.attachment.dto.response.GetAttachment;
 import com.sparta.springtrello.domain.attachment.dto.response.UploadAttachment;
@@ -13,10 +15,16 @@ import com.sparta.springtrello.domain.card.entity.Card;
 import com.sparta.springtrello.domain.card.exception.CardNotFoundException;
 import com.sparta.springtrello.domain.card.repository.CardRepository;
 import com.sparta.springtrello.domain.common.AuthUser;
+import com.sparta.springtrello.domain.user.entity.User;
+import com.sparta.springtrello.domain.user.repository.UserRepository;
+import com.sparta.springtrello.domain.workspace.entity.MemberRole;
+import com.sparta.springtrello.domain.workspace.entity.WorkSpace;
+import com.sparta.springtrello.domain.workspace.entity.WorkspaceMember;
+import com.sparta.springtrello.domain.workspace.repository.WorkSpaceRepository;
+import com.sparta.springtrello.domain.workspace.repository.WorkspaceMemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,9 +46,12 @@ public class AttachmentService {
 
     private final AttachmentRepository attachmentRepository;
     private final CardRepository cardRepository;
+    private final WorkspaceMemberRepository workspaceMemberRepository;
+    private final WorkSpaceRepository workSpaceRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public UploadAttachment uploadAttachment(AuthUser authUser,Long wordSpaceId, Long cardId, MultipartFile file) throws IOException {
+    public UploadAttachment uploadAttachment(AuthUser authUser,Long workSpaceId, Long cardId, MultipartFile file) throws IOException {
         if(file.isEmpty()){
             log.error("File is empty");
             throw new FileBadRequestException("업로드 할 파일이 없습니다.");
@@ -51,6 +62,7 @@ public class AttachmentService {
         );
 
         //유저 역할 읽기 전용 예외처리
+        validateMemberRole(authUser,workSpaceId);
 
         String fileName = file.getOriginalFilename();
         log.info("originalFilename : {}", fileName);
@@ -114,6 +126,7 @@ public class AttachmentService {
     public DeleteMessage deleteAttachment(AuthUser authUser, Long workSpaceId, Long cardId, Long attachmentId) {
 
         //유저 역할 읽기 전용 예외처리
+        validateMemberRole(authUser,workSpaceId);
 
         Card card = cardRepository.findById(cardId).orElseThrow(
                 () -> new CardNotFoundException("카드를 찾을 수 없습니다.")
@@ -132,4 +145,23 @@ public class AttachmentService {
 
         return DeleteMessage.of("첨부파일이 삭제가 완료 되었습니다.");
     }
+
+    private void validateMemberRole(AuthUser authUser,Long workSpaceId){
+        WorkSpace workSpace = workSpaceRepository.findById(workSpaceId).orElseThrow(
+                () -> new NotFoundException("워크스페이스를 찾을 수 없습니다.")
+        );
+
+        User user = userRepository.findById(authUser.getUserId()).orElseThrow(
+                () -> new NotFoundException("유저를 찾을 수 없습니다.")
+        );
+
+        WorkspaceMember workspaceMember = workspaceMemberRepository.findByWorkSpaceAndUser(workSpace,user).orElseThrow(
+                () -> new NotFoundException("유저가 가지고 있는 워크스페이스가 아닙니다.")
+        );
+
+        if(workspaceMember.getRole().equals(MemberRole.READ_ONLY)){
+            throw new UnAuthorizationException("읽기 전용 유저는 첨부파일을 추가를 할 수 없습니다.");
+        }
+    }
+
 }
