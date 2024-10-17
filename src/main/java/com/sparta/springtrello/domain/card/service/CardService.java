@@ -229,7 +229,7 @@ public class CardService {
         if(requestDto.getCardDescription() != null) card.setCardDescription(requestDto.getCardDescription());
         if(requestDto.getClosingAt() != null) card.setClosingAt(requestDto.getClosingAt());
 
-        if(!requestDto.getAddUsers().isEmpty()) {
+        if(requestDto.getAddUsers() != null) {
             List<Long> userIdList = requestDto.getAddUsers();
             List<User> addUsers = card.getUsers();
             for (Long userId : userIdList) {
@@ -238,7 +238,7 @@ public class CardService {
             card.setUsers(addUsers);
         }
 
-        if(!requestDto.getRemoveUsers().isEmpty()) {
+        if(requestDto.getRemoveUsers() != null) {
             List<Long> userIdList = requestDto.getRemoveUsers();
             List<User> removeUsers = card.getUsers();
             for (Long userId : userIdList) {
