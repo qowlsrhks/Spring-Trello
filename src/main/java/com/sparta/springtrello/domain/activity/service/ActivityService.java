@@ -40,19 +40,4 @@ public class ActivityService {
         List<ActivityResponseDto> activity = activityRepository.findByCardOrderByCreatedAtDesc(card).stream().map(ActivityResponseDto::new).toList();
         return new CardActivityResponseDto(comment, activity);
     }
-
-    public Activity logActivity(Checklist checklist, User user, ActivityType activityType, String details) {
-        Activity activity = new Activity(checklist, user, activityType, details);
-        return activityRepository.save(activity);
-    }
-
-    public Activity logActivity(ChecklistItem checklistItem, User user, ActivityType activityType, String details) {
-        Activity activity = new Activity(checklistItem, user, activityType, details);
-        return activityRepository.save(activity);
-    }
-
-    public Activity logActivity(ChecklistItem checklistItem, User user, ActivityType activityType) {
-        Activity activity = new Activity(checklistItem, user, activityType);
-        return activityRepository.save(activity);
-    }
 }

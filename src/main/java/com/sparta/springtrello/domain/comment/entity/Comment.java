@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 public class Comment extends Timestamped {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(columnDefinition = "TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
     private String contents;
 
     @ManyToOne(fetch = FetchType.LAZY)
