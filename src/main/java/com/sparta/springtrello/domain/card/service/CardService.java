@@ -1,6 +1,8 @@
 package com.sparta.springtrello.domain.card.service;
 
 import com.sparta.springtrello.domain.activity.common.ActivityLogger;
+import com.sparta.springtrello.domain.board.entity.Board;
+import com.sparta.springtrello.domain.board.repository.BoardRepository;
 import com.sparta.springtrello.domain.card.dto.CardArrangeRequestDto;
 import com.sparta.springtrello.domain.card.dto.CardRequestDto;
 import com.sparta.springtrello.domain.card.dto.CardResponseDto;
@@ -12,6 +14,9 @@ import com.sparta.springtrello.domain.cardList.repository.CardListRepository;
 import com.sparta.springtrello.domain.common.AuthUser;
 import com.sparta.springtrello.domain.user.entity.User;
 import com.sparta.springtrello.domain.user.repository.UserRepository;
+import com.sparta.springtrello.domain.workspace.entity.MemberRole;
+import com.sparta.springtrello.domain.workspace.entity.WorkspaceMember;
+import com.sparta.springtrello.domain.workspace.repository.WorkspaceMemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,17 +32,28 @@ public class CardService {
     private final CardListRepository listRepository;
     private final UserRepository userRepository;
     private final ActivityLogger activityLogger;
+    private final WorkspaceMemberRepository workspaceMemberRepository;
+    private final BoardRepository boardRepository;
 
     public CardResponseDto createCard(Long id, CardRequestDto requestDto, AuthUser authUser) {
         // 멤버 권한 검증 -> 읽기 멤버인지만 체크하면 될듯
         // 멤버 정보 추가
-        User user = userRepository.findById(authUser.getUserId()).orElseThrow(
+        User loggedInUser = userRepository.findById(authUser.getUserId()).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 유저 ID 입니다.")
         );
+        List<WorkspaceMember> workspaceMember = workspaceMemberRepository.findByUserEmail(loggedInUser.getEmail());
+        if(workspaceMember.isEmpty()) {
+            throw new IllegalArgumentException("역할이 없습니다.");
+        }
+        List<WorkspaceMember> getWorkspaceMemberRole = workspaceMemberRepository.findByRole(workspaceMember.get(0).getRole());
+
+        if(getWorkspaceMemberRole.get(0).getRole() == MemberRole.READ_ONLY) {
+            throw new IllegalArgumentException("읽기 전용 멤버는 보드 생성을 할수 없습니다.");
+        }
 
         List<User> users = new ArrayList<>();
 
-        users.add(user);
+        users.add(loggedInUser);
 
         CardList cardList = listRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 리스트입니다.")
@@ -65,18 +81,30 @@ public class CardService {
             }
         }
 
-        activityLogger.logCardCreated(card, user);
+        activityLogger.logCardCreated(card, loggedInUser);
         return new CardResponseDto(savedCard);
     }
 
-    public Long deleteCard(Long listId, Long cardId) {
+    public Long deleteCard(AuthUser authUser, Long listId, Long cardId) {
         Card card = cardRepository.findById(cardId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 카드 ID 입니다.")
         );
-
         CardList list = listRepository.findById(listId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 리스트 ID 입니다.")
         );
+
+        User loggedInUser = userRepository.findById(authUser.getUserId()).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 유저 ID 입니다.")
+        );
+        List<WorkspaceMember> workspaceMember = workspaceMemberRepository.findByUserEmail(loggedInUser.getEmail());
+        if(workspaceMember.isEmpty()) {
+            throw new IllegalArgumentException("역할이 없습니다.");
+        }
+        List<WorkspaceMember> getWorkspaceMemberRole = workspaceMemberRepository.findByRole(workspaceMember.get(0).getRole());
+
+        if(getWorkspaceMemberRole.get(0).getRole() == MemberRole.READ_ONLY) {
+            throw new IllegalArgumentException("읽기 전용 멤버는 보드 생성을 할수 없습니다.");
+        }
 
         List<Card> cards = cardRepository.findAllByCardList(list);
 
@@ -102,11 +130,23 @@ public class CardService {
         return cardId;
     }
 
-    public List<CardResponseDto> viewAllCardByListId(Long id) {
+    public List<CardResponseDto> viewAllCardByListId(AuthUser authUser, Long id) {
         CardList cardList = listRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 리스트 ID 입니다.")
         );
         List<Card> cards = cardRepository.findAllByCardList(cardList);
+
+        User loggedInUser = userRepository.findById(authUser.getUserId()).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 유저 ID 입니다."));
+
+        List<WorkspaceMember> getWorkspaceMemberEmail = workspaceMemberRepository.findByUserEmailAndWorkSpace_WorkspaceId(loggedInUser.getEmail(),cardList.getBoard().getWorkSpace().getWorkspaceId());
+        if(getWorkspaceMemberEmail.isEmpty()) {
+            throw new IllegalArgumentException("역할이 없습니다.");
+        }
+        List<Board> boards = boardRepository.findByWorkSpace_WorkspaceId(getWorkspaceMemberEmail.get(0).getWorkSpace().getWorkspaceId());
+        if (boards.isEmpty()) {
+            throw new IllegalArgumentException("보드가 존재하지 않습니다.");
+        }
 
         Map<Long, Card> cardMap = cards.stream().collect(Collectors.toMap(Card::getCardId, c->c));
 
@@ -219,9 +259,22 @@ public class CardService {
 
     public CardResponseDto updateCard(Long id, CardUpdateRequestDto requestDto, AuthUser authUser) {
         // 유저 검증
+        User loggedInUser = userRepository.findById(authUser.getUserId()).orElseThrow(
+                () -> new IllegalArgumentException("권한이 없습니다.")
+        );
         Card card = cardRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 카드 ID 입니다.")
         );
+
+        List<WorkspaceMember> workspaceMember = workspaceMemberRepository.findByUserEmail(loggedInUser.getEmail());
+        if(workspaceMember.isEmpty()) {
+            throw new IllegalArgumentException("역할이 없습니다.");
+        }
+        List<WorkspaceMember> getWorkspaceMemberRole = workspaceMemberRepository.findByRole(workspaceMember.get(0).getRole());
+
+        if(getWorkspaceMemberRole.get(0).getRole() == MemberRole.READ_ONLY) {
+            throw new IllegalArgumentException("읽기 전용 멤버입니다.");
+        }
 
         Map<Long, User> userMap = userRepository.findAll().stream().collect(Collectors.toMap(User::getId, u->u));
 
@@ -255,13 +308,22 @@ public class CardService {
     public CardResponseDto archiveCard(Long cardId, String email) {
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카드 ID 입니다."));
-        User user = userRepository.findByEmail(email)
+        User loggedInUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("권한이 없습니다."));
+        List<WorkspaceMember> workspaceMember = workspaceMemberRepository.findByUserEmail(email);
+        if(workspaceMember.isEmpty()) {
+            throw new IllegalArgumentException("역할이 없습니다.");
+        }
+        List<WorkspaceMember> getWorkspaceMemberRole = workspaceMemberRepository.findByRole(workspaceMember.get(0).getRole());
+
+        if(getWorkspaceMemberRole.get(0).getRole() == MemberRole.READ_ONLY) {
+            throw new IllegalArgumentException("읽기 전용 멤버입니다.");
+        }
 
         card.archive();
         if(!card.isArchived()) {
             Card archivedCard = cardRepository.save(card);
-            activityLogger.logCardArchived(archivedCard, user);
+            activityLogger.logCardArchived(archivedCard, loggedInUser);
             return new CardResponseDto(archivedCard);
         } else {
             return new CardResponseDto(card);
@@ -274,6 +336,15 @@ public class CardService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카드 ID 입니다."));
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("권한이 없습니다."));
+        List<WorkspaceMember> workspaceMember = workspaceMemberRepository.findByUserEmail(email);
+        if(workspaceMember.isEmpty()) {
+            throw new IllegalArgumentException("역할이 없습니다.");
+        }
+        List<WorkspaceMember> getWorkspaceMemberRole = workspaceMemberRepository.findByRole(workspaceMember.get(0).getRole());
+
+        if(getWorkspaceMemberRole.get(0).getRole() == MemberRole.READ_ONLY) {
+            throw new IllegalArgumentException("읽기 전용 멤버입니다.");
+        }
 
         card.unarchive();
         if(card.isArchived()) {
@@ -286,7 +357,19 @@ public class CardService {
     }
 
     // 카드 조회 시 아카이브 상태 고려
-    public List<CardResponseDto> getActiveCardsByList(Long cardId) {
+    public List<CardResponseDto> getActiveCardsByList(AuthUser authUser, Long cardId) {
+        User loggedInUser = userRepository.findById(authUser.getUserId()).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 유저 ID 입니다.")
+        );
+        List<WorkspaceMember> workspaceMember = workspaceMemberRepository.findByUserEmail(loggedInUser.getEmail());
+        if(workspaceMember.isEmpty()) {
+            throw new IllegalArgumentException("역할이 없습니다.");
+        }
+        List<WorkspaceMember> getWorkspaceMemberRole = workspaceMemberRepository.findByRole(workspaceMember.get(0).getRole());
+
+        if(getWorkspaceMemberRole.get(0).getRole() == MemberRole.READ_ONLY) {
+            throw new IllegalArgumentException("읽기 전용 멤버입니다.");
+        }
         CardList cardList = listRepository.findById(cardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리스트 ID 입니다."));
         List<Card> activeCards = cardRepository.findByCardListAndArchiveTrue(cardList);

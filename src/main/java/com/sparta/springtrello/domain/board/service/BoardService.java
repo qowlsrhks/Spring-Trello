@@ -37,6 +37,9 @@ public class BoardService {
                 -> new IllegalArgumentException("존재하지 않는 워크스페이스입니다."));
 
         List<WorkspaceMember> workspaceMember = workspaceMemberRepository.findByUserEmail(loggedInUser.getEmail());
+        if(workspaceMember.isEmpty()) {
+            throw new IllegalArgumentException("역할이 없습니다.");
+        }
         List<WorkspaceMember> getWorkspaceMemberRole = workspaceMemberRepository.findByRole(workspaceMember.get(0).getRole());
 
         if(getWorkspaceMemberRole.get(0).getRole() == MemberRole.READ_ONLY) {
@@ -56,9 +59,10 @@ public class BoardService {
                 -> new IllegalArgumentException("존재하지 않는 워크스페이스입니다."));
 //       자신이 속해 있는 워크스페이스에 보드 조회
         List<WorkspaceMember> getWorkspaceMemberEmail = workspaceMemberRepository.findByUserEmailAndWorkSpace_WorkspaceId(loggedInUser.getEmail(),workSpace.getWorkspaceId());
+        if(getWorkspaceMemberEmail.isEmpty()) {
+            throw new IllegalArgumentException("역할이 없습니다.");
+        }
         List<Board> boards = boardRepository.findByWorkSpace_WorkspaceId(getWorkspaceMemberEmail.get(0).getWorkSpace().getWorkspaceId());
-
-
         if(boards.stream().noneMatch(board -> board.getBoardId().equals(boardId))){
             throw new IllegalArgumentException("보드가 존재하지 않습니다");
         }
@@ -73,8 +77,10 @@ public class BoardService {
                 -> new IllegalArgumentException("존재하지 않는 워크스페이스입니다."));
 //       자신이 속해 있는 워크스페이스 조회
         List<WorkspaceMember> getWorkspaceMemberEmail = workspaceMemberRepository.findByUserEmailAndWorkSpace_WorkspaceId(loggedInUser.getEmail(),workSpace.getWorkspaceId());
+        if(getWorkspaceMemberEmail.isEmpty()) {
+            throw new IllegalArgumentException("역할이 없습니다.");
+        }
         List<Board> boards = boardRepository.findByWorkSpace_WorkspaceId(getWorkspaceMemberEmail.get(0).getWorkSpace().getWorkspaceId());
-
         if (boards.isEmpty()) {
             throw new IllegalArgumentException("보드가 존재하지 않습니다.");
         }
@@ -106,7 +112,7 @@ public class BoardService {
         List<WorkspaceMember> getWorkspaceMemberRole = workspaceMemberRepository.findByRole(workspaceMember.get(0).getRole());
 
         if(getWorkspaceMemberRole.get(0).getRole() == MemberRole.READ_ONLY) {
-            throw new IllegalArgumentException("읽기 전용 멤버는 보드 생성을 할수 없습니다.");
+            throw new IllegalArgumentException("읽기 전용 멤버입니다.");
         }
         return workSpace;
     }
