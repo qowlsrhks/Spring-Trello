@@ -40,6 +40,7 @@ public class CardResponseDto {
     private boolean check;
     private List<Long> usersId;
     private boolean archived;
+    private int commentCount;
 
     public static List<Long> getUsersId(List<User> users) {
         List<Long> usersId = users.stream().map(User::getId).collect(Collectors.toList());
