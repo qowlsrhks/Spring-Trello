@@ -24,8 +24,6 @@ public class UserController {
     public String signUp(@RequestBody SignupRequestDto signupRequestDto) {
         Role userRole = Role.valueOf(signupRequestDto.getRole().toUpperCase());
         userService.signUp(signupRequestDto.getPassword(), signupRequestDto.getUsername(), signupRequestDto.getEmail() , userRole);
-        String message = "New user signed up: " + signupRequestDto.getUsername();
-        notificationService.sendSlackNotification(message);
 
         return "회원가입 성공";
     }
