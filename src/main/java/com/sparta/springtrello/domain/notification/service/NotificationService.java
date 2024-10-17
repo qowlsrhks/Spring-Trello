@@ -6,7 +6,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class NotificationService {
-    private static final String SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/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";
+    private static final String SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/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";
 
     public void sendSlackNotification(String message) {
         RestTemplate restTemplate = new RestTemplate();
