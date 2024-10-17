@@ -32,7 +32,7 @@ public class SearchService {
     public List<CardSearch> searchCard(String cardName, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Card> cardPage = cardRepository.findByCardName(cardName,pageable);
+        Page<Card> cardPage = cardRepository.findByCardNameContains(cardName,pageable);
 
         if(cardPage.isEmpty()) {
             throw new CardNotFoundException("카드를 찾을 수 없습니다.");
