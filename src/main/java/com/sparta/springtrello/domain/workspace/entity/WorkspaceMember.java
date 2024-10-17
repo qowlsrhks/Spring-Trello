@@ -23,7 +23,7 @@ public class WorkspaceMember {
     private WorkSpace workSpace;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_email", nullable = false, referencedColumnName = "email")
     private User user;
 
     @Enumerated(EnumType.STRING)

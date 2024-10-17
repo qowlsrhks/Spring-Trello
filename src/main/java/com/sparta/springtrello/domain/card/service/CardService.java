@@ -251,6 +251,47 @@ public class CardService {
         return new CardResponseDto(updatedCard);
     }
 
+    @Transactional
+    public CardResponseDto archiveCard(Long cardId, String email) {
+        Card card = cardRepository.findById(cardId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카드 ID 입니다."));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("권한이 없습니다."));
+
+        card.archive();
+        if(!card.isArchived()) {
+            Card archivedCard = cardRepository.save(card);
+            activityLogger.logCardArchived(archivedCard, user);
+            return new CardResponseDto(archivedCard);
+        } else {
+            return new CardResponseDto(card);
+        }
+    }
+
+    @Transactional
+    public CardResponseDto unarchiveCard(Long cardId, String email) {
+        Card card = cardRepository.findById(cardId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카드 ID 입니다."));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("권한이 없습니다."));
+
+        card.unarchive();
+        if(card.isArchived()) {
+            Card unarchivedCard = cardRepository.save(card);
+            activityLogger.logCardUnarchived(unarchivedCard, user);
+            return new CardResponseDto(unarchivedCard);
+        }
+
+        return new CardResponseDto(card);
+    }
+
+    // 카드 조회 시 아카이브 상태 고려
+    public List<CardResponseDto> getActiveCardsByList(Long listId) {
+        CardList cardList = listRepository.findById(listId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리스트 ID 입니다."));
+        List<Card> activeCards = cardRepository.findByCardListAndArchiveFalse(cardList);
+        return activeCards.stream().map(CardResponseDto::new).collect(Collectors.toList());
+    }
 
     // 유저 정보 받고 검증
 }

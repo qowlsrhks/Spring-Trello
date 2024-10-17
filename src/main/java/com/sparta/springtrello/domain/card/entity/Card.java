@@ -14,11 +14,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name = "cards",
-        indexes = {
-                @Index(name = "idx_card_name", columnList = "card_name"),
-                @Index(name = "idx_closing_at", columnList = "closing_at")
-        })
 public class Card extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -45,7 +40,4 @@ public class Card extends Timestamped {
             inverseJoinColumns = @JoinColumn(name = "user_id") // User 엔티티와 연결된 FK
     )
     private List<User> users;
-
-
-
 }

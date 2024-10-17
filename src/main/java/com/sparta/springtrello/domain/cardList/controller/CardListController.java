@@ -19,9 +19,10 @@ import java.util.List;
 public class CardListController {
     private final CardListService listService;
 
-    @PostMapping("/list")
-    ResponseEntity<CardListResponseDto> createList(@RequestBody CardListRequestDto requestDto, @Auth AuthUser authUser) {
-        CardListResponseDto responseDto = listService.createList(requestDto, authUser);
+    @PostMapping("/list/{id}")
+    ResponseEntity<CardListResponseDto> createList(@RequestBody CardListRequestDto requestDto, @Auth AuthUser authUser, @PathVariable Long id) {
+        CardListResponseDto responseDto = listService.createList(requestDto, authUser, id);
+
         return ResponseEntity.ok(responseDto);
     }
 

@@ -23,6 +23,7 @@ public class CardResponseDto {
         this.listId = card.getCardList().getListId();
         this.check = card.isChecked();
         this.users = card.getUsers();
+        this.archived = card.isArchived();
     }
 
     private Long cardId;
@@ -36,4 +37,6 @@ public class CardResponseDto {
     private Long listId;
     private boolean check;
     private List<User> users;
+    private boolean archived;
+
 }

@@ -1,5 +1,6 @@
 package com.sparta.springtrello.domain.workspace.controller;
 
+import com.sparta.springtrello.domain.workspace.dto.WorkSpaceMemberRequestDto;
 import com.sparta.springtrello.domain.workspace.dto.WorkSpaceRequestDto;
 import com.sparta.springtrello.domain.workspace.dto.WorkSpaceResponseDto;
 import com.sparta.springtrello.domain.workspace.entity.MemberRole;
@@ -32,7 +33,7 @@ public class WorkspaceController {
     }
 //    다건조회
     @GetMapping("/{userId}/workspacesList")
-    public ResponseEntity<List<WorkSpaceResponseDto>> getWorkSpaces(@PathVariable("userId") Long userId) {
+    public ResponseEntity<List<WorkSpaceMemberRequestDto>> getWorkSpaces(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(workSpaceService.getWorkSpaces(userId));
     }
 //    수정
@@ -40,10 +41,10 @@ public class WorkspaceController {
     public ResponseEntity<WorkSpaceResponseDto> updateWorkSpace(@PathVariable("userId") Long userId,@PathVariable("wsId") Long workSpaceId,@Valid @RequestBody WorkSpaceRequestDto workSpaceRequestDto) {
         return ResponseEntity.ok(workSpaceService.updateWorkSpace(userId,workSpaceId,workSpaceRequestDto));
     }
-
-    @PostMapping("/{wsId}/members/{userId}")
-    public ResponseEntity<String> addMember(@PathVariable Long wsId, @PathVariable Long userId, @RequestParam MemberRole role) {
-        workSpaceService.addMember(wsId, userId, role);
+//    멤버 초대
+    @PostMapping("/{userId}/{wsId}/members")
+    public ResponseEntity<String> addMember(@PathVariable Long userId,@PathVariable Long wsId, @RequestParam String userEmail, @RequestParam MemberRole role) {
+        workSpaceService.addMember(userId,wsId, userEmail, role);
         return ResponseEntity.ok("멤버가 추가되었습니다.");
     }
 
