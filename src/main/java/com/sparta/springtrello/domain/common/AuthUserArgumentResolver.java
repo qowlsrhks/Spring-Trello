@@ -13,6 +13,9 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -49,7 +52,6 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
                 return new AuthUser(email, role, userId);
             }
         }
-
         return null;
     }
 }
