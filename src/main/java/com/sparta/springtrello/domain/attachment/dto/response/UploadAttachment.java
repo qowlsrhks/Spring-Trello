@@ -27,8 +27,16 @@ public class UploadAttachment {
     public static UploadAttachment uploadAttachment(Attachment attachment) {
         return UploadAttachment.builder()
                 .attachmentId(attachment.getId())
+                .cardId(attachment.getCard().getCardId())
                 .fileName(attachment.getSaveFilename())
                 .createdAt(attachment.getCreateAt())
+                .build();
+    }
+
+
+    public static UploadAttachment testAttachment(Long attachmentId) {
+        return UploadAttachment.builder()
+                .attachmentId(attachmentId)
                 .build();
     }
 

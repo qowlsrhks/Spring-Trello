@@ -1,7 +1,10 @@
 package com.sparta.springtrello.domain.card.entity;
 
+import com.sparta.springtrello.domain.activity.entity.Activity;
 import com.sparta.springtrello.domain.attachment.entity.Attachment;
 import com.sparta.springtrello.domain.cardList.entity.CardList;
+import com.sparta.springtrello.domain.checklist.entity.Checklist;
+import com.sparta.springtrello.domain.comment.entity.Comment;
 import com.sparta.springtrello.domain.common.Timestamped;
 import com.sparta.springtrello.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -9,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,6 +30,21 @@ public class Card extends Timestamped {
     private boolean checked = false;
     // 체크박스 만들기
 
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Checklist> checklists = new ArrayList<>();
+
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Activity> activities = new ArrayList<>();
+
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
+    @Column
+    private int commentCount = 0;
+
+    @Column(nullable = false)
+    private boolean archive = false;
+
     @ManyToOne
     @JoinColumn(name = "listId")
     private CardList cardList;
@@ -40,4 +59,27 @@ public class Card extends Timestamped {
             inverseJoinColumns = @JoinColumn(name = "user_id") // User 엔티티와 연결된 FK
     )
     private List<User> users;
+
+    public void archive() {
+        this.archive = true;
+    }
+
+    public void unarchive() {
+        this.archive = false;
+    }
+
+    public boolean isArchived() {
+        return archive;
+    }
+
+    public void increaseCommentCount() {
+        this.commentCount++;
+    }
+
+    public void decreaseCommentCount() {
+        if (this.commentCount > 0) {
+            this.commentCount--;
+        }
+    }
+
 }

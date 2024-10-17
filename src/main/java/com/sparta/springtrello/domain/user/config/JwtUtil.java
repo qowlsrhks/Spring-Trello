@@ -69,7 +69,7 @@ public class JwtUtil {
     // JWT Cookie 에 저장
     public void addJwtToCookie(String token, HttpServletResponse res) {
         try {
-            token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20"); // Cookie Value 에는 공백이 불가능해서 encoding 진행
+            token = URLEncoder.encode(token, "UTF-8"); // Cookie Value 에는 공백이 불가능해서 encoding 진행
 
             Cookie cookie = new Cookie(AUTHORIZATION_HEADER, token); // Name-Value
             cookie.setPath("/");
@@ -81,14 +81,14 @@ public class JwtUtil {
         }
     }
 
-    // JWT 토큰 substring
-    public String substringToken(String tokenValue) {
-        if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
-            return tokenValue.substring(7);
-        }
-        logger.error("Not Found Token");
-        throw new NullPointerException("Not Found Token");
-    }
+//    // JWT 토큰 substring
+//    public String substringToken(String tokenValue) {
+//        if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
+//            return tokenValue.substring(7);
+//        }
+//        logger.error("Not Found Token");
+//        throw new NullPointerException("Not Found Token");
+//    }
 
     // 토큰 검증
     public boolean validateToken(String token) {
@@ -124,21 +124,31 @@ public class JwtUtil {
 
     // HttpServletRequest 에서 Cookie Value : JWT 가져오기
     public String getTokenFromRequest(HttpServletRequest req) {
-
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(AUTHORIZATION_HEADER)) {
-                    try {
-                        return URLDecoder.decode(cookie.getValue(), "UTF-8"); // Encode 되어 넘어간 Value 다시 Decode
-                    } catch (UnsupportedEncodingException e) {
-                        return null;
+                    String value = cookie.getValue();
+                    if (StringUtils.hasText(value)) {
+                        try {
+                            // URL 디코딩 후 공백 제거
+                            String decodedValue = URLDecoder.decode(value, "UTF-8").trim();
+                            // Bearer 접두사 제거
+                            if (decodedValue.startsWith("Bearer ")) {
+                                return decodedValue.substring(7); // "Bearer " 부분 제거
+                            }
+                            return decodedValue; // Bearer가 없는 경우, 그대로 반환
+                        } catch (UnsupportedEncodingException e) {
+                            logger.error("Failed to decode token from cookie: {}", e.getMessage());
+                        }
                     }
                 }
             }
         }
         return null;
     }
+
+
 
 
 }

@@ -7,6 +7,8 @@ import com.sparta.springtrello.domain.card.dto.CardUpdateRequestDto;
 import com.sparta.springtrello.domain.card.service.CardService;
 import com.sparta.springtrello.domain.common.Auth;
 import com.sparta.springtrello.domain.common.AuthUser;
+import com.sparta.springtrello.domain.user.entity.User;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,20 +28,21 @@ public class CardController {
     }
 
     @DeleteMapping("/list/{listId}/card/{cardId}")
-    public ResponseEntity<Long> deleteCard(@PathVariable("listId") Long listId, @PathVariable("cardId") Long cardId){
-        Long id = cardService.deleteCard(listId, cardId);
+    public ResponseEntity<Long> deleteCard(@Auth AuthUser authUser,@PathVariable("listId") Long listId, @PathVariable("cardId") Long cardId){
+        Long id = cardService.deleteCard(authUser,listId, cardId);
         return ResponseEntity.ok(id);
     }
 
     @GetMapping("/list/{id}/card")
-    public ResponseEntity<List<CardResponseDto>> viewAllCardByListId(@PathVariable Long id){
-        List<CardResponseDto> responseDtoList = cardService.viewAllCardByListId(id);
+    public ResponseEntity<List<CardResponseDto>> viewAllCardByListId(@Auth AuthUser authUser,@PathVariable Long id){
+        List<CardResponseDto> responseDtoList = cardService.viewAllCardByListId(authUser,id);
         return ResponseEntity.ok(responseDtoList);
     }
 
     @PatchMapping("/list/card")
-    public ResponseEntity<Long> arrangeCard(@RequestBody CardArrangeRequestDto requestDto){
-        Long id = cardService.arrangeCard(requestDto);
+    public ResponseEntity<Long> arrangeCard(@RequestBody CardArrangeRequestDto requestDto, HttpServletRequest request){
+        String email = (String) request.getAttribute("email");
+        Long id = cardService.arrangeCard(requestDto, email);
         return ResponseEntity.ok(id);
     }
 
@@ -56,5 +59,24 @@ public class CardController {
     public ResponseEntity<CardResponseDto> updateCard(@PathVariable Long id, @RequestBody CardUpdateRequestDto requestDto, @Auth AuthUser authUser){
         CardResponseDto responseDto = cardService.updateCard(id, requestDto, authUser);
         return ResponseEntity.ok(responseDto);
+    }
+
+    @PatchMapping("/list/archive/{cardId}")
+    public ResponseEntity<CardResponseDto> archiveCard(@PathVariable Long cardId, HttpServletRequest request) {
+        String email = (String) request.getAttribute("email");
+        CardResponseDto responseDto = cardService.archiveCard(cardId, email);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PatchMapping("/list/restore/{cardId}")
+    public ResponseEntity<CardResponseDto> RestoreCard(@PathVariable Long cardId, HttpServletRequest request) {
+        String email = (String) request.getAttribute("email");
+        CardResponseDto responseDto = cardService.unarchiveCard(cardId, email);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping("/list/archive/{cardId}")
+    public ResponseEntity<List<CardResponseDto>> getArchiveCardList(@Auth AuthUser authUser,@PathVariable Long cardId) {
+       return ResponseEntity.ok(cardService.getActiveCardsByList(authUser,cardId));
     }
 }

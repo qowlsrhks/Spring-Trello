@@ -1,5 +1,6 @@
 package com.sparta.springtrello.domain.user.controller;
 
+import com.sparta.springtrello.domain.notification.service.NotificationService;
 import com.sparta.springtrello.domain.user.config.JwtUtil;
 import com.sparta.springtrello.domain.user.dto.DeleteRequestDto;
 import com.sparta.springtrello.domain.user.dto.LoginRequestDto;
@@ -17,11 +18,13 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
+    private final NotificationService notificationService;
 
     @PostMapping("/signup")
     public String signUp(@RequestBody SignupRequestDto signupRequestDto) {
         Role userRole = Role.valueOf(signupRequestDto.getRole().toUpperCase());
         userService.signUp(signupRequestDto.getPassword(), signupRequestDto.getUsername(), signupRequestDto.getEmail() , userRole);
+
         return "회원가입 성공";
     }
 

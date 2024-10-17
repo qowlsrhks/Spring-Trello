@@ -13,10 +13,15 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthUserArgumentResolver.class);
 
     private final JwtUtil jwtUtil;
 
@@ -31,16 +36,22 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         String token = jwtUtil.getTokenFromRequest(request);
 
-        if (token != null && jwtUtil.validateToken(token)) {
-            Claims claims = jwtUtil.getUserInfoFromToken(token);
-            Long userId = Long.valueOf(claims.getSubject());
-            String email = claims.get("email", String.class);
-            Role role = Role.valueOf(claims.get("role", String.class));
-            log.info("user_id ::: {}, role ::: {} ", userId, role);
+        logger.info("Generated JWT Token: {}", token);
 
-            return new AuthUser(email, role, userId);
+        // Trim the token to remove any leading or trailing whitespace
+        if (token != null) {
+            token = token.trim(); // Trim any spaces
+
+            if (jwtUtil.validateToken(token)) {
+                Claims claims = jwtUtil.getUserInfoFromToken(token);
+                Long userId = Long.valueOf(claims.getSubject());
+                String email = claims.get("email", String.class);
+                Role role = Role.valueOf(claims.get("role", String.class));
+                log.info("user_id ::: {}, role ::: {} ", userId, role);
+
+                return new AuthUser(email, role, userId);
+            }
         }
-
         return null;
     }
 }
