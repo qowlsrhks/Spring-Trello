@@ -26,6 +26,7 @@ public class CardResponseDto {
         this.check = card.isChecked();
         this.usersId = CardResponseDto.getUsersId(card.getUsers());
         this.archived = card.isArchived();
+        this.commentCount = card.getCommentCount();
     }
 
     private Long cardId;
