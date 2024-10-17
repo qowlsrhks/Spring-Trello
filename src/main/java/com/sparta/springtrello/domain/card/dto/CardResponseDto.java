@@ -38,5 +38,6 @@ public class CardResponseDto {
     private boolean check;
     private List<User> users;
     private boolean archived;
+    private int commentCount;
 
 }
