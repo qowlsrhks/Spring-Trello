@@ -33,9 +33,9 @@ public class CommentController {
         return ResponseEntity.ok(commentService.updateComment(commentId, commentRequestDto, email));
     }
 
-    @DeleteMapping("comments/{commentId}")
-    ResponseEntity<CommentResponseDto> deleteComment(@PathVariable Long commentId, HttpServletRequest request) {
+    @DeleteMapping("card/{cardId}comments/{commentId}")
+    ResponseEntity<CommentResponseDto> deleteComment(@PathVariable Long cardId, @PathVariable Long commentId, HttpServletRequest request) {
         String email = (String) request.getAttribute("email");
-        return ResponseEntity.ok(commentService.deleteComment(commentId, email));
+        return ResponseEntity.ok(commentService.deleteComment(cardId, commentId, email));
     }
 }

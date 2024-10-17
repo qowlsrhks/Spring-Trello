@@ -39,6 +39,9 @@ public class Card extends Timestamped {
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
+    @Column
+    private int commentCount = 0;
+
     @Column(nullable = false)
     private boolean archive = false;
 
@@ -68,4 +71,15 @@ public class Card extends Timestamped {
     public boolean isArchived() {
         return archive;
     }
+
+    public void increaseCommentCount() {
+        this.commentCount++;
+    }
+
+    public void decreaseCommentCount() {
+        if (this.commentCount > 0) {
+            this.commentCount--;
+        }
+    }
+
 }
