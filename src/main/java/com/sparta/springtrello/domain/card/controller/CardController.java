@@ -75,8 +75,8 @@ public class CardController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @GetMapping("/list/archive/{listId}")
-    public ResponseEntity<List<CardResponseDto>> getArchiveCardList(@PathVariable Long listId) {
-       return ResponseEntity.ok(cardService.getActiveCardsByList(listId));
+    @GetMapping("/list/archive/{cardId}")
+    public ResponseEntity<List<CardResponseDto>> getArchiveCardList(@PathVariable Long cardId) {
+       return ResponseEntity.ok(cardService.getActiveCardsByList(cardId));
     }
 }

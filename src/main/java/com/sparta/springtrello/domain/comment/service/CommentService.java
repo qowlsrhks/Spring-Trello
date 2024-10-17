@@ -26,6 +26,7 @@ public class CommentService {
         Card card = cardRepository.findById(cardId).orElseThrow(()-> new IllegalArgumentException("카드를 찾을 수 없습니다."));
         Comment comment = new Comment(user, card, requestDto);
         Comment saveDomment = commentRepository.save(comment);
+        card.increaseCommentCount();
         return new CommentResponseDto(saveDomment);
     }
 
@@ -44,10 +45,12 @@ public class CommentService {
         return new CommentResponseDto(comment);
     }
 
-    public CommentResponseDto deleteComment(Long commentId, String email) {
+    public CommentResponseDto deleteComment(Long cardId, Long commentId, String email) {
         userRepository.findByEmail(email).orElseThrow(()-> new IllegalArgumentException("권한이 없습니다."));
         Comment comment = commentRepository.findById(commentId).orElseThrow(()-> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
+        Card card = cardRepository.findById(cardId).orElseThrow(()-> new IllegalArgumentException("카드를 찾을 수 없습니다."));
         commentRepository.delete(comment);
+        card.decreaseCommentCount();
         return new CommentResponseDto(comment);
     }
 }

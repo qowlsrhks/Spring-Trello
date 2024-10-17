@@ -286,10 +286,10 @@ public class CardService {
     }
 
     // 카드 조회 시 아카이브 상태 고려
-    public List<CardResponseDto> getActiveCardsByList(Long listId) {
-        CardList cardList = listRepository.findById(listId)
+    public List<CardResponseDto> getActiveCardsByList(Long cardId) {
+        CardList cardList = listRepository.findById(cardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리스트 ID 입니다."));
-        List<Card> activeCards = cardRepository.findByCardListAndArchiveFalse(cardList);
+        List<Card> activeCards = cardRepository.findByCardListAndArchiveTrue(cardList);
         return activeCards.stream().map(CardResponseDto::new).collect(Collectors.toList());
     }
 

@@ -26,6 +26,7 @@ public class CardResponseDto {
         this.check = card.isChecked();
         this.usersId = CardResponseDto.getUsersId(card.getUsers());
         this.archived = card.isArchived();
+        this.commentCount = card.getCommentCount();
     }
 
     private Long cardId;
@@ -40,6 +41,7 @@ public class CardResponseDto {
     private boolean check;
     private List<Long> usersId;
     private boolean archived;
+    private int commentCount;
 
     public static List<Long> getUsersId(List<User> users) {
         List<Long> usersId = users.stream().map(User::getId).collect(Collectors.toList());
