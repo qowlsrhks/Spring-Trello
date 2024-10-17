@@ -37,7 +37,7 @@ public class AuthFilter implements Filter {
 
             if (StringUtils.hasText(tokenValue)) { // 토큰이 존재하면 검증 시작
                 // JWT 토큰 substring
-                String token = jwtUtil.substringToken(tokenValue);
+                String token = tokenValue;
 
                 // 토큰 검증
                 if (!jwtUtil.validateToken(token)) {
