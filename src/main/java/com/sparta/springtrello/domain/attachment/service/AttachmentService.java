@@ -101,7 +101,7 @@ public class AttachmentService {
         Card card = cardRepository.findById(cardId).orElseThrow(
                 () -> new CardNotFoundException("카드를 찾을 수 없습니다.")
         );
-        List<Attachment> attachments = attachmentRepository.findByCard(card);
+        List<Attachment> attachments = attachmentRepository.findByCardAndIsDelete(card,AttachmentDeleteState.UNDELETED);
         if (attachments.isEmpty()) {
             log.error("Attachment is empty");
             throw new AttachmentNotFoundException("해당 카드의 첨부파일이 없습니다.");
@@ -117,9 +117,14 @@ public class AttachmentService {
         Card card = cardRepository.findById(cardId).orElseThrow(
                 () -> new CardNotFoundException("카드를 찾을 수 없습니다.")
         );
-        return attachmentRepository.findByIdAndCard(attachmentId, card).orElseThrow(
+        Attachment attachment = attachmentRepository.findByIdAndCardAndIsDelete(attachmentId, card,AttachmentDeleteState.UNDELETED).orElseThrow(
                 () -> new AttachmentNotFoundException("해당 카드의 첨부파일이 없습니다.")
         );
+        if (attachment.getIsDelete().equals(AttachmentDeleteState.DELETED)){
+            throw new IllegalArgumentException("삭제된 첨부파일은 받을 수 없습니다.");
+        }
+
+         return attachment;
     }
 
     @Transactional
@@ -132,7 +137,7 @@ public class AttachmentService {
                 () -> new CardNotFoundException("카드를 찾을 수 없습니다.")
         );
 
-        Attachment attachment = attachmentRepository.findByIdAndCard(attachmentId, card).orElseThrow(
+        Attachment attachment = attachmentRepository.findByIdAndCardAndIsDelete(attachmentId, card, AttachmentDeleteState.UNDELETED).orElseThrow(
                 () -> new AttachmentNotFoundException("해당 카드의 첨부파일이 없습니다.")
         );
 
