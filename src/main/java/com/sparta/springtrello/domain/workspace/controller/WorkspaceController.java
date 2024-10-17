@@ -23,7 +23,7 @@ public class WorkspaceController {
     private final WorkSpaceService workSpaceService;
 
     //    생성
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<WorkSpaceResponseDto> createWorkSpace(@Auth AuthUser authUser,@Valid @RequestBody WorkSpaceRequestDto workSpaceRequestDto) {
         return ResponseEntity.ok(workSpaceService.createWorkSpace(authUser,workSpaceRequestDto));
     }
