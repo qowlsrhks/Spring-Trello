@@ -18,6 +18,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthUserArgumentResolver.class);
+
     private final JwtUtil jwtUtil;
 
     @Override
@@ -29,17 +31,25 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        String token = jwtUtil.getTokenFromRequest(request).trim();
-        token = jwtUtil.substringToken(token);
+        String token = jwtUtil.getTokenFromRequest(request);
 
-        Claims claims = jwtUtil.getUserInfoFromToken(token);
-        Long userId = Long.valueOf(claims.getSubject());
-        String email = claims.get("email", String.class);
-        Role role = Role.valueOf(claims.get("role", String.class));
-        log.info("user_id ::: {}, role ::: {} ", userId, role);
+        logger.info("Generated JWT Token: {}", token);
 
-        return new AuthUser(email, role, userId);
+        // Trim the token to remove any leading or trailing whitespace
+        if (token != null) {
+            token = token.trim(); // Trim any spaces
 
+            if (jwtUtil.validateToken(token)) {
+                Claims claims = jwtUtil.getUserInfoFromToken(token);
+                Long userId = Long.valueOf(claims.getSubject());
+                String email = claims.get("email", String.class);
+                Role role = Role.valueOf(claims.get("role", String.class));
+                log.info("user_id ::: {}, role ::: {} ", userId, role);
 
+                return new AuthUser(email, role, userId);
+            }
+        }
+
+        return null;
     }
 }

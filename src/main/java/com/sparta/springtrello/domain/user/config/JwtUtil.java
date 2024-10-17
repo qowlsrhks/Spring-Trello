@@ -17,7 +17,6 @@ import org.springframework.util.StringUtils;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -69,30 +68,34 @@ public class JwtUtil {
 
     // JWT Cookie 에 저장
     public void addJwtToCookie(String token, HttpServletResponse res) {
-        token = URLEncoder.encode(token, StandardCharsets.UTF_8).replaceAll("\\+", "%20"); // Cookie Value 에는 공백이 불가능해서 encoding 진행
+        try {
+            token = URLEncoder.encode(token, "UTF-8"); // Cookie Value 에는 공백이 불가능해서 encoding 진행
 
-        Cookie cookie = new Cookie(AUTHORIZATION_HEADER, token); // Name-Value
-        cookie.setPath("/");
+            Cookie cookie = new Cookie(AUTHORIZATION_HEADER, token); // Name-Value
+            cookie.setPath("/");
 
-        // Response 객체에 Cookie 추가
-        res.addCookie(cookie);
-    }
-
-    // JWT 토큰 substring
-    public String substringToken(String tokenValue) {
-        if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
-            return tokenValue.substring(7);
+            // Response 객체에 Cookie 추가
+            res.addCookie(cookie);
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage());
         }
-        logger.error("Not Found Token");
-        throw new NullPointerException("Not Found Token");
     }
+
+//    // JWT 토큰 substring
+//    public String substringToken(String tokenValue) {
+//        if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
+//            return tokenValue.substring(7);
+//        }
+//        logger.error("Not Found Token");
+//        throw new NullPointerException("Not Found Token");
+//    }
 
     // 토큰 검증
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (SecurityException | MalformedJwtException e) {
+        } catch (SecurityException | MalformedJwtException | SignatureException e) {
             logger.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
         } catch (ExpiredJwtException e) {
             logger.error("Expired JWT token, 만료된 JWT token 입니다.");
@@ -126,12 +129,27 @@ public class JwtUtil {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(AUTHORIZATION_HEADER)) {
-                    return URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8); // Encode 되어 넘어간 Value 다시 Decode
+                    String value = cookie.getValue();
+                    if (StringUtils.hasText(value)) {
+                        try {
+                            // URL 디코딩 후 공백 제거
+                            String decodedValue = URLDecoder.decode(value, "UTF-8").trim();
+                            // Bearer 접두사 제거
+                            if (decodedValue.startsWith("Bearer ")) {
+                                return decodedValue.substring(7); // "Bearer " 부분 제거
+                            }
+                            return decodedValue; // Bearer가 없는 경우, 그대로 반환
+                        } catch (UnsupportedEncodingException e) {
+                            logger.error("Failed to decode token from cookie: {}", e.getMessage());
+                        }
+                    }
                 }
             }
         }
         return null;
     }
+
+
 
 
 }

@@ -8,6 +8,9 @@ import com.sparta.springtrello.domain.cardList.dto.CardListResponseDto;
 import com.sparta.springtrello.domain.cardList.entity.CardList;
 import com.sparta.springtrello.domain.cardList.repository.CardListRepository;
 import com.sparta.springtrello.domain.common.AuthUser;
+import com.sparta.springtrello.domain.user.entity.Role;
+import com.sparta.springtrello.domain.user.entity.User;
+import com.sparta.springtrello.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,11 +24,20 @@ import java.util.stream.Collectors;
 public class CardListService {
     private final CardListRepository listRepository;
     private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
 
     public CardListResponseDto createList(CardListRequestDto cardListRequestDto, AuthUser authUser, Long id) {
         // next가 null인 어트리뷰트 찾아서 이어 붙이기.
         // 멤버 권한 검증
         // 유저 정보 전달
+        User user = userRepository.findById(authUser.getUserId()).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 유저 ID 입니다.")
+        );
+
+        if(!user.getRole().equals(Role.ADMIN)){
+            
+        }
+
         Board board = boardRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 보드 ID 입니다.")
         );
