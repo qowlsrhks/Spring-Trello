@@ -22,16 +22,21 @@ public class CardListService {
     private final CardListRepository listRepository;
     private final BoardRepository boardRepository;
 
-    public CardListResponseDto createList(CardListRequestDto cardListRequestDto, AuthUser authUser) {
+    public CardListResponseDto createList(CardListRequestDto cardListRequestDto, AuthUser authUser, Long id) {
         // next가 null인 어트리뷰트 찾아서 이어 붙이기.
         // 멤버 권한 검증
         // 유저 정보 전달
+        Board board = boardRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 보드 ID 입니다.")
+        );
+
         List<CardList> lastList = listRepository.findAll()
                 .stream().filter(cl -> cl.getNextListId() == null)
                 .toList();
 
         CardList cardList = new CardList();
         cardList.setListName(cardListRequestDto.getListName());
+        cardList.setBoard(board);
 
         if(!lastList.isEmpty()) {
             cardList.setPrevListId(lastList.get(0).getListId());

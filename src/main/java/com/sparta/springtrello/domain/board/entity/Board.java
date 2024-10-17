@@ -2,16 +2,15 @@ package com.sparta.springtrello.domain.board.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sparta.springtrello.domain.board.dto.BoardRequestDto;
+import com.sparta.springtrello.domain.board.dto.ListResponseDto;
 import com.sparta.springtrello.domain.cardList.entity.CardList;
 import com.sparta.springtrello.domain.common.Timestamped;
 import com.sparta.springtrello.domain.workspace.entity.WorkSpace;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity

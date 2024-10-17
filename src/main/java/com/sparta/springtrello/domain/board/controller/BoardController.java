@@ -2,14 +2,11 @@ package com.sparta.springtrello.domain.board.controller;
 
 import com.sparta.springtrello.domain.board.dto.BoardRequestDto;
 import com.sparta.springtrello.domain.board.dto.BoardResponseDto;
-import com.sparta.springtrello.domain.board.entity.Board;
+import com.sparta.springtrello.domain.board.dto.ListResponseDto;
 import com.sparta.springtrello.domain.board.service.BoardService;
 import jakarta.validation.Valid;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +26,7 @@ public class BoardController {
     }
 //    단건조회
     @GetMapping("/{userId}/{wsId}/{boardId}")
-    public ResponseEntity<BoardResponseDto> getBoard(@PathVariable("userId") Long userId,@PathVariable("wsId") Long workSpaceId, @PathVariable("boardId") Long boardId) {
+    public ResponseEntity<ListResponseDto> getBoard(@PathVariable("userId") Long userId, @PathVariable("wsId") Long workSpaceId, @PathVariable("boardId") Long boardId) {
         return ResponseEntity.ok(boardService.getBoard(userId,workSpaceId,boardId));
     }
 //    다건조회
