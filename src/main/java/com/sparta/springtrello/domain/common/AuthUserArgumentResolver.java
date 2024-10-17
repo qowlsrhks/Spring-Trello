@@ -30,18 +30,16 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         String token = jwtUtil.getTokenFromRequest(request).trim();
-        token = token.replaceAll("\\s+", "");
+        token = jwtUtil.substringToken(token);
 
-        if (token != null && jwtUtil.validateToken(token)) {
-            Claims claims = jwtUtil.getUserInfoFromToken(token);
-            Long userId = Long.valueOf(claims.getSubject());
-            String email = claims.get("email", String.class);
-            Role role = Role.valueOf(claims.get("role", String.class));
-            log.info("user_id ::: {}, role ::: {} ", userId, role);
+        Claims claims = jwtUtil.getUserInfoFromToken(token);
+        Long userId = Long.valueOf(claims.getSubject());
+        String email = claims.get("email", String.class);
+        Role role = Role.valueOf(claims.get("role", String.class));
+        log.info("user_id ::: {}, role ::: {} ", userId, role);
 
-            return new AuthUser(email, role, userId);
-        }
+        return new AuthUser(email, role, userId);
 
-        return null;
+
     }
 }
