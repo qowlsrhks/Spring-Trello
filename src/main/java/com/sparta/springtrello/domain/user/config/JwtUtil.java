@@ -59,7 +59,7 @@ public class JwtUtil {
                 Jwts.builder()
                         .setSubject(String.valueOf(id)) // 사용자 식별자값(ID)
                         .claim("email", email) // 사용자 이메일(email)
-                        .claim("role", role != null ? role.name() : "DEFAULT_ROLE") // 사용자 권한
+                        .claim("role", role.name()) // 사용자 권한
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
@@ -124,6 +124,7 @@ public class JwtUtil {
 
     // HttpServletRequest 에서 Cookie Value : JWT 가져오기
     public String getTokenFromRequest(HttpServletRequest req) {
+
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {

@@ -1,8 +1,5 @@
 package com.sparta.springtrello.domain.common;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sparta.springtrello.domain.user.config.JwtUtil;
 import com.sparta.springtrello.domain.user.entity.Role;
 import io.jsonwebtoken.Claims;
@@ -15,6 +12,9 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component
 @Slf4j
@@ -52,8 +52,6 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
                 return new AuthUser(email, role, userId);
             }
         }
-
         return null;
     }
-
 }
