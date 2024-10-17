@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface CardRepository extends JpaRepository<Card, Long> {
     List<Card> findAllByCardList(CardList cardList);
 
-    Page<Card> findByCardName(String cardName, Pageable pageable);
+    Page<Card> findByCardNameContains(String cardName, Pageable pageable);
 
     List<Card> findByCardListAndArchiveTrue(CardList cardList);
 
