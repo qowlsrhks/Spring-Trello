@@ -44,6 +44,10 @@ import java.util.List;
     @JsonBackReference
     private List<Board> boards = new ArrayList<>();
 
+    @OneToMany(mappedBy = "workSpace", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private List<WorkspaceMember> workspaceMembers = new ArrayList<>();
+
     public WorkSpace(WorkSpaceRequestDto workSpaceRequestDto){
         this.workspaceName = workSpaceRequestDto.getWorkspaceName();
         this.workspaceDescription = workSpaceRequestDto.getWorkspaceDescription();

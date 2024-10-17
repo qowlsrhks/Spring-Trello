@@ -26,6 +26,9 @@ public class Card extends Timestamped {
     private boolean checked = false;
     // 체크박스 만들기
 
+    @Column(nullable = false)
+    private boolean archive = false;
+
     @ManyToOne
     @JoinColumn(name = "listId")
     private CardList cardList;
@@ -40,4 +43,16 @@ public class Card extends Timestamped {
             inverseJoinColumns = @JoinColumn(name = "user_id") // User 엔티티와 연결된 FK
     )
     private List<User> users;
+
+    public void archive() {
+        this.archive = true;
+    }
+
+    public void unarchive() {
+        this.archive = false;
+    }
+
+    public boolean isArchived() {
+        return archive;
+    }
 }

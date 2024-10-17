@@ -54,6 +54,16 @@ public class ActivityLogger {
         activityService.logActivity(card, user, ActivityType.CHECKLIST_ITEM_DELETED, details);
     }
 
+    public void logCardArchived(Card card, User user) {
+        String details = String.format("카드 '%s'가 아카이브되었습니다.", card.getCardName());
+        activityService.logActivity(card, user, ActivityType.CARD_ARCHIVED, details);
+    }
+
+    public void logCardUnarchived(Card card, User user) {
+        String details = String.format("카드 '%s'가 아카이브에서 복원되었습니다.", card.getCardName());
+        activityService.logActivity(card, user, ActivityType.CARD_RESTORED, details);
+    }
+
     public void logDueDateChanged(Card card, User user, LocalDate newDueDate) {
         String details = String.format(user.getUsername()+"님이 날짜를 변경했습니다: %s", newDueDate.toString());
         activityService.logActivity(card, user, ActivityType.DUE_DATE_CHANGED, details);
