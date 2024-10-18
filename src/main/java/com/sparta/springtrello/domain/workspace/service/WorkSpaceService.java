@@ -106,9 +106,12 @@ public class WorkSpaceService {
                 () -> new IllegalArgumentException("존재하지 않는 워크스페이스입니다."));
 
 //        workspaceMember에 userId.getEmail()이 존재 하지 않으면 권한이 없게 검증 처리
-        List<WorkspaceMember> workspaceMember = workspaceMemberRepository.findByUserEmailAndWorkSpace_WorkspaceId(loggedInUser.getEmail(),workSpaceId);
-        if (workspaceMember.stream().noneMatch(member -> member.getUser().getEmail().equals(loggedInUser.getEmail()))) {
-            throw new IllegalArgumentException("권한이 없습니다");
+        List<WorkspaceMember> workspaceMember = workspaceMemberRepository.findByUserEmail(loggedInUser.getEmail());
+        if (workspaceMember.get(0).getRole() == MemberRole.READ_ONLY) {
+            throw new IllegalArgumentException("읽기 전용 멤버입니다");
+        }
+        if (workspaceMember.get(0).getRole() == MemberRole.MEMBER) {
+            throw new IllegalArgumentException("MEMBER 권한을 가진 유저입니다");
         }
         return workSpace;
     }
