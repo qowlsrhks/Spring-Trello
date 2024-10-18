@@ -1,6 +1,7 @@
 package com.sparta.springtrello.domain.workspace.service;
 
 
+import com.sparta.springtrello.domain.common.AuthUser;
 import com.sparta.springtrello.domain.workspace.dto.WorkSpaceMemberRequestDto;
 import com.sparta.springtrello.domain.workspace.entity.MemberRole;
 import com.sparta.springtrello.domain.workspace.entity.WorkspaceMember;
@@ -28,9 +29,9 @@ public class WorkSpaceService {
 
     //    생성
     @Transactional
-    public WorkSpaceResponseDto createWorkSpace(Long userId, WorkSpaceRequestDto workSpaceRequestDto) {
+    public WorkSpaceResponseDto createWorkSpace(AuthUser authUser, WorkSpaceRequestDto workSpaceRequestDto) {
 
-        User user = userRepository.findById(userId).orElseThrow(() ->
+        User user = userRepository.findById(authUser.getUserId()).orElseThrow(() ->
                 new IllegalArgumentException("해당 유저가 없습니다."));
 
         // ADMIN 권한 확인
@@ -50,8 +51,8 @@ public class WorkSpaceService {
     }
 
     //    수정
-    public WorkSpaceResponseDto updateWorkSpace(Long userId, Long workSpaceId, WorkSpaceRequestDto workSpaceRequestDto) {
-        WorkSpace workSpace = validateWorkSpace(userId, workSpaceId);
+    public WorkSpaceResponseDto updateWorkSpace(AuthUser authUser, Long workSpaceId, WorkSpaceRequestDto workSpaceRequestDto) {
+        WorkSpace workSpace = validateWorkSpace(authUser, workSpaceId);
 
         workSpace.update(workSpaceRequestDto);
         workSpaceRepository.save(workSpace);
@@ -59,15 +60,15 @@ public class WorkSpaceService {
     }
 
     //    단건조회
-    public WorkSpaceResponseDto getWorkSpace(Long userId, Long workSpaceId) {
-        WorkSpace workSpace = validateWorkSpace(userId, workSpaceId);
+    public WorkSpaceResponseDto getWorkSpace(AuthUser authUser, Long workSpaceId) {
+        WorkSpace workSpace = validateWorkSpace(authUser, workSpaceId);
         return new WorkSpaceResponseDto(workSpace);
 
     }
 
     //    다건조회
-    public List<WorkSpaceMemberRequestDto> getWorkSpaces(Long userId) {
-       User loggedInUser = userRepository.findById(userId).orElseThrow(() ->
+    public List<WorkSpaceMemberRequestDto> getWorkSpaces(AuthUser authUser) {
+       User loggedInUser = userRepository.findById(authUser.getUserId()).orElseThrow(() ->
                 new IllegalArgumentException("해당 유저가 없습니다."));
         List<WorkspaceMember> workSpaces = workspaceMemberRepository.findByUserEmail(loggedInUser.getEmail());
         if(workSpaces.isEmpty()) {
@@ -80,8 +81,8 @@ public class WorkSpaceService {
 
     //        멤버 초대
     @Transactional
-    public void addMember(Long userId,Long workSpaceId, String userEmail, MemberRole role) {
-        WorkSpace workSpace = validateWorkSpace(userId,workSpaceId);
+    public void addMember(AuthUser authUser,Long workSpaceId, String userEmail, MemberRole role) {
+        WorkSpace workSpace = validateWorkSpace(authUser,workSpaceId);
         User invitedUser  = userRepository.findByEmail(userEmail).orElseThrow(
                 () -> new IllegalArgumentException("이메일가 존재하지 않습니다."));
 
@@ -92,22 +93,25 @@ public class WorkSpaceService {
 
     //    삭제
     @Transactional
-    public void deleteWorkSpace(Long userId, Long workSpaceId) {
-        WorkSpace workSpace = validateWorkSpace(userId, workSpaceId);
+    public void deleteWorkSpace(AuthUser authUser, Long workSpaceId) {
+        WorkSpace workSpace = validateWorkSpace(authUser, workSpaceId);
         workSpaceRepository.delete(workSpace);
     }
 
     //        유저,워크스페이스,권한 검증
-    public WorkSpace validateWorkSpace(Long userId, Long workSpaceId) {
-        User loggedInUser = userRepository.findById(userId).orElseThrow(() ->
+    public WorkSpace validateWorkSpace(AuthUser authUser, Long workSpaceId) {
+        User loggedInUser = userRepository.findById(authUser.getUserId()).orElseThrow(() ->
                 new IllegalArgumentException("해당 유저가 없습니다."));
         WorkSpace workSpace = workSpaceRepository.findById(workSpaceId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 워크스페이스입니다."));
 
 //        workspaceMember에 userId.getEmail()이 존재 하지 않으면 권한이 없게 검증 처리
-        List<WorkspaceMember> workspaceMember = workspaceMemberRepository.findByUserEmailAndWorkSpace_WorkspaceId(loggedInUser.getEmail(),workSpaceId);
-        if (workspaceMember.stream().noneMatch(member -> member.getUser().getEmail().equals(loggedInUser.getEmail()))) {
-            throw new IllegalArgumentException("권한이 없습니다");
+        List<WorkspaceMember> workspaceMember = workspaceMemberRepository.findByUserEmail(loggedInUser.getEmail());
+        if (workspaceMember.get(0).getRole() == MemberRole.READ_ONLY) {
+            throw new IllegalArgumentException("읽기 전용 멤버입니다");
+        }
+        if (workspaceMember.get(0).getRole() == MemberRole.MEMBER) {
+            throw new IllegalArgumentException("MEMBER 권한을 가진 유저입니다");
         }
         return workSpace;
     }

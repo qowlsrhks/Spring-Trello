@@ -28,14 +28,14 @@ public class CardController {
     }
 
     @DeleteMapping("/list/{listId}/card/{cardId}")
-    public ResponseEntity<Long> deleteCard(@PathVariable("listId") Long listId, @PathVariable("cardId") Long cardId){
-        Long id = cardService.deleteCard(listId, cardId);
+    public ResponseEntity<Long> deleteCard(@Auth AuthUser authUser,@PathVariable("listId") Long listId, @PathVariable("cardId") Long cardId){
+        Long id = cardService.deleteCard(authUser,listId, cardId);
         return ResponseEntity.ok(id);
     }
 
     @GetMapping("/list/{id}/card")
-    public ResponseEntity<List<CardResponseDto>> viewAllCardByListId(@PathVariable Long id){
-        List<CardResponseDto> responseDtoList = cardService.viewAllCardByListId(id);
+    public ResponseEntity<List<CardResponseDto>> viewAllCardByListId(@Auth AuthUser authUser,@PathVariable Long id){
+        List<CardResponseDto> responseDtoList = cardService.viewAllCardByListId(authUser,id);
         return ResponseEntity.ok(responseDtoList);
     }
 
@@ -76,7 +76,7 @@ public class CardController {
     }
 
     @GetMapping("/list/archive/{cardId}")
-    public ResponseEntity<List<CardResponseDto>> getArchiveCardList(@PathVariable Long cardId) {
-       return ResponseEntity.ok(cardService.getActiveCardsByList(cardId));
+    public ResponseEntity<List<CardResponseDto>> getArchiveCardList(@Auth AuthUser authUser,@PathVariable Long cardId) {
+       return ResponseEntity.ok(cardService.getActiveCardsByList(authUser,cardId));
     }
 }

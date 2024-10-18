@@ -60,7 +60,6 @@ public class AttachmentService {
         Card card = cardRepository.findById(cardId).orElseThrow(
                 () -> new CardNotFoundException("카드를 찾을 수 없습니다.")
         );
-
         //유저 역할 읽기 전용 예외처리
         validateMemberRole(authUser,workSpaceId);
 
